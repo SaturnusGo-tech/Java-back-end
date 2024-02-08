@@ -12,20 +12,22 @@ import com.virtoworks.omnia.utils.env.EnvironmentConfig;
 import java.util.Map;
 
 import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TestBrowsingCatalog {
 
     loginPageLocators loginPageLocators = new loginPageLocators();
+    logOutLocators logOutLocators = new logOutLocators();
 
     ActionsAuth actionsAuth = new ActionsAuth();
 
-    EnvironmentConfig environmentConfig = new EnvironmentConfig("qa");
+    EnvironmentConfig environmentConfig = new EnvironmentConfig("demo");
 
     @BeforeAll
     public static void setUpAll() {
         Configuration.browserSize = "1280x800";
-        //Configuration.headless = true;
+        Configuration.headless = true;
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
 
@@ -38,11 +40,23 @@ public class TestBrowsingCatalog {
 
     }
 
+    /*DOD:
+            1.catalog is visible, catalog is scaling, catalog is consistency
+            2.filters is present
+    */
+
     @Test
     public void simpleBrowsingCatalog() {
 
 
 
+
+    }
+
+    @AfterEach
+    public void tearDown(){
+
+        actionsAuth.userLogOut();
 
     }
 }

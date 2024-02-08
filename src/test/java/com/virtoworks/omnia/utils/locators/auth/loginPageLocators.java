@@ -10,5 +10,6 @@ public class loginPageLocators {
 
     public SelenideElement PASSWORD_NAME = $("input[type='password']");
 
-    public SelenideElement SUBMIT_BUTTON = $("button[type='submit']");
+    public SelenideElement LOGIN_BUTTON = $("button[type='submit']");
+
 }
