@@ -6,9 +6,9 @@ import java.io.InputStream;
 
 public class EnvironmentConfig {
 
-    private String url;
-    private String email;
-    private String password;
+    private final String url;
+    private final String email;
+    private final String password;
 
     public EnvironmentConfig(String envName) {
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.json");

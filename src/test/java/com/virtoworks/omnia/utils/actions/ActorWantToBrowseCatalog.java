@@ -1,4 +1,4 @@
-package com.virtoworks.omnia;
+package com.virtoworks.omnia.utils.actions;
 
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.ElementsCollection;
