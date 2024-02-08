@@ -7,7 +7,6 @@ public class ActorWantTo {
     public void LogInAsUser(){
 
     }
-
     // Move to page
     public void MoveToPage(){
 

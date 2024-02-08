@@ -17,8 +17,12 @@
         <aspectj.version>1.9.19</aspectj.version>
         <allure.version>2.24.0</allure.version>
     </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit5</artifactId>
@@ -87,6 +91,7 @@
                         <version>${aspectj.version}</version>
                     </dependency>
                 </dependencies>
+
             </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>

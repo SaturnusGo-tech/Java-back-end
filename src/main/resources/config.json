@@ -1,0 +1,18 @@
+{
+  "qa": {
+    "url": "https://qa-opus.omniapartners.com/",
+    "email": "test549854545@test.com",
+    "password": "1234567Test!"
+  },
+  "uat": {
+    "url": "https://uat-opus.omniapartners.com/",
+    "email": "secondsomeschllast@test.com",
+    "password": "1234567Test!"
+  },
+  "demo": {
+    "url": "https://demo-opus.omniapartners.com/",
+    "email": "johndoeuser@yopmail.com",
+    "password": "Password_1"
+  }
+}
+
