@@ -1,6 +1,7 @@
 package com.virtoworks.omnia.test.catalog;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import com.virtoworks.omnia.utils.actions.auth.ActionsAuth;
 import com.virtoworks.omnia.utils.locators.auth.*;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBrowsingCatalog {
 
@@ -50,6 +52,8 @@ public class TestBrowsingCatalog {
         $x("//img[@src='/themes/assets/static/images/supplier/banner1.jpg']")
                 .should(enabled, Duration.ofSeconds(environmentConfig.getEnvDuration()))
                 .click();
+
+        assertEquals("Catalog", $("li[class*='font-medium']").getText(), "Fail: Catalog in the breadcrumbs is absent");
 
 
 
