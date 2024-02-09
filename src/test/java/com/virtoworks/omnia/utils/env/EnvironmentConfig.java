@@ -10,6 +10,8 @@ public class EnvironmentConfig {
     private final String email;
     private final String password;
 
+    private final String getEnvDuration;
+
     public EnvironmentConfig(String envName) {
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.json");
         if (is == null) {
@@ -21,6 +23,7 @@ public class EnvironmentConfig {
         this.url = envConfig.getString("url");
         this.email = envConfig.getString("email");
         this.password = envConfig.getString("password");
+        this.getEnvDuration = envConfig.getString("envDuration");
     }
 
     public String getUrl() {
@@ -33,5 +36,10 @@ public class EnvironmentConfig {
 
     public String getPassword() {
         return password;
+    }
+
+    public Integer getEnvDuration() {
+
+        return (Integer) Integer.parseInt(getEnvDuration);
     }
 }

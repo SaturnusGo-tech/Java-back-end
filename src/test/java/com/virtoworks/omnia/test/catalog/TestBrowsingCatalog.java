@@ -9,10 +9,10 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import com.virtoworks.omnia.utils.env.EnvironmentConfig;
 
+import java.time.Duration;
 import java.util.Map;
 
-import static com.codeborne.selenide.Condition.attribute;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TestBrowsingCatalog {
@@ -44,10 +44,12 @@ public class TestBrowsingCatalog {
             1.catalog is visible, catalog is scaling, catalog is consistency
             2.filters is present
     */
-
     @Test
     public void simpleBrowsingCatalog() {
 
+        $x("//img[@src='/themes/assets/static/images/supplier/banner1.jpg']")
+                .should(enabled, Duration.ofSeconds(environmentConfig.getEnvDuration()))
+                .click();
 
 
 

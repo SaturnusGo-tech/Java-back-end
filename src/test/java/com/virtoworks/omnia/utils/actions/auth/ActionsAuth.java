@@ -1,38 +1,38 @@
 package com.virtoworks.omnia.utils.actions.auth;
 
+import com.virtoworks.omnia.utils.env.EnvironmentConfig;
 import com.virtoworks.omnia.utils.locators.auth.logOutLocators;
 import com.virtoworks.omnia.utils.locators.auth.loginPageLocators;
 
+import java.time.Duration;
 import java.util.Map;
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
+
 
 public class ActionsAuth {
 
     loginPageLocators loginPageLocators = new loginPageLocators();
     logOutLocators logOutLocators = new logOutLocators();
 
-    public void userLogin(String login, String password){
+    // solve it through class constructor
+    EnvironmentConfig environmentConfig = new EnvironmentConfig("demo");
 
-        loginPageLocators.LOGIN_BUTTON.should(exist);
+
+    public void userLogin(String login, String password){
 
         loginPageLocators.LOGIN_NAME.sendKeys(login);
         loginPageLocators.PASSWORD_NAME.sendKeys(password);
-        loginPageLocators.LOGIN_BUTTON.shouldBe(visible).click();
+        loginPageLocators.LOGIN_BUTTON.shouldBe(enabled, Duration.ofSeconds(environmentConfig.getEnvDuration())).click();
 
     }
 
     public void userLogOut(){
 
-        logOutLocators.VC_ICON.should(exist);
+        logOutLocators.VC_ICON.shouldBe(enabled, Duration.ofSeconds(environmentConfig.getEnvDuration())).click();
 
-        logOutLocators.VC_ICON.shouldBe(visible).click();
-
-        logOutLocators.LOGOUT_BUTTON.should(exist);
-
-        logOutLocators.LOGOUT_BUTTON.shouldBe(visible).click();
+        logOutLocators.LOGOUT_BUTTON.shouldBe(enabled, Duration.ofSeconds(environmentConfig.getEnvDuration())).click();
 
     }
 }
