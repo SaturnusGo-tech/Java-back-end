@@ -3,7 +3,7 @@
     "url": "https://qa-opus.omniapartners.com/",
     "email": "test549854545@test.com",
     "password": "1234567Test!",
-    "envDuration": "5"
+    "envDuration": "10"
   },
   "uat": {
     "url": "https://uat-opus.omniapartners.com/",

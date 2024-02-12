@@ -22,8 +22,8 @@ public class ActionsAuth {
 
     public void userLogin(String login, String password){
 
-        loginPageLocators.LOGIN_NAME.sendKeys(login);
-        loginPageLocators.PASSWORD_NAME.sendKeys(password);
+        loginPageLocators.LOGIN_NAME.shouldBe(visible, Duration.ofSeconds(environmentConfig.getEnvDuration())).sendKeys(login);
+        loginPageLocators.PASSWORD_NAME.shouldBe(visible, Duration.ofSeconds(environmentConfig.getEnvDuration())).sendKeys(password);
         loginPageLocators.LOGIN_BUTTON.shouldBe(enabled, Duration.ofSeconds(environmentConfig.getEnvDuration())).click();
 
     }
