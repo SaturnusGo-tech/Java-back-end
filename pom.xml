@@ -83,6 +83,7 @@
                             <value>${project.build.directory}/allure-results</value>
                         </property>
                     </systemProperties>
+                    <groups>${test.groups}</groups>
                 </configuration>
                 <dependencies>
                     <dependency>
