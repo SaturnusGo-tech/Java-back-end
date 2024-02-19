@@ -24,6 +24,15 @@
             <version>${allure.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>2.0.46</version>
+        </dependency>
+
+
+
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

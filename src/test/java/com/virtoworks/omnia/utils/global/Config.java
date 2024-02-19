@@ -35,8 +35,13 @@ public class Config {
         Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
         String baseUrl = environmentConfig.getUrl().endsWith("/") ? environmentConfig.getUrl() : environmentConfig.getUrl() + "/";
         open(baseUrl + endpoint);
-        actionsAuth.userLogin(environmentConfig.getEmail(), environmentConfig.getPassword());
+
+        // Исправленный селектор, предполагая, что все классы должны применяться к одному элементу
+        if (Selenide.$$(".vc-button.vc-button--size--xs.vc-button--color--neutral.vc-button--outline--neutral.vc-button--icon.ml-4").isEmpty()) {
+            actionsAuth.userLogin(environmentConfig.getEmail(), environmentConfig.getPassword());
+        }
     }
+
 
     /**
      * Retrieves the environment-specific duration setting for timeouts.
