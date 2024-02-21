@@ -42,19 +42,23 @@ public class TestPairwiseFilterAlgorithm {
      *   2. Breadcrumb text is verified as 'Catalog'
      */
     @Test
-    @Tag("SupplierFilters")
-    public void verifySupplierFiltersFunctionality() throws InterruptedException {
+    @Tag("CatalogFilters")
+    public void verifySupplierData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
         int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
         assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
 
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
+        filters.SupplierMoreLessData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
         List<String> checkboxLocators = new ArrayList<>(filters.Supplier.values());
-        checkboxLocators.addAll(filters.Catalog.values());
 
         // Click on each checkbox and verify updates
-        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.MoreLessData, filters.SupData);
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.SupplierMoreLessData, filters.FullData);
 
         actionsCatalog.waitForCatalogPage();
     }
@@ -69,7 +73,7 @@ public class TestPairwiseFilterAlgorithm {
      */
     @Test
     @Tag("CatalogFilters")
-    public void verifyCatalogFiltersFunctionality() throws InterruptedException {
+    public void verifyCatalogData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 
         int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
@@ -79,15 +83,243 @@ public class TestPairwiseFilterAlgorithm {
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
         filters.CatalogData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+
+        filters.CatalogMoreLessData.scrollTo().shouldBe(visible).click();
+
         actionsCatalog.waitForCatalogPage();
 
         List<String> checkboxLocators = new ArrayList<>(filters.Catalog.values());
 
-        // Click on each checkbox and verify updates
-        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.MoreLessData, filters.FullData);
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.SupplierMoreLessData, filters.FullData);
 
         actionsCatalog.waitForCatalogPage();
     }
+
+
+    /**
+     * Test verifies the functionality of color filters within the catalog section.
+     * Ensures that applying color filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("ColorFilters")
+    public void verifyColorData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.ColorData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.ColorMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Color.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.ColorMoreLessData, filters.ManufacturerData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of country of origin filters within the catalog.
+     * Ensures that applying these filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("CountryOfOriginFilters")
+    public void verifyCountryOfOriginData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.CountryOfOriginData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.CountryOfOriginMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.CountryOfOrigin.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.CountryOfOriginMoreLessData, filters.CountryOfOriginData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of material filters within the catalog.
+     * Ensures that applying material filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("MaterialFilters")
+    public void verifyMaterialData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.MaterialData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.MaterialMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Material.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.MaterialMoreLessData, filters.MaterialData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of height filters within the catalog.
+     * Ensures that applying height filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("HeightFilters")
+    public void verifyHeightData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.HeightData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.HeightMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Height.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.HeightMoreLessData, filters.HeightData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of length filters within the catalog.
+     * Ensures that applying length filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("LengthFilters")
+    public void verifyLengthData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.LengthData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.LengthMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Length.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.LengthMoreLessData, filters.LengthData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of width filters within the catalog.
+     * Ensures that applying width filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("WidthFilters")
+    public void verifyWidthData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).isGreaterThanOrEqualTo(12).as("The number of catalog items should be at least 12");
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).isEqualTo("Catalog").as("Breadcrumb text should match 'Catalog'");
+
+        filters.WidthData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.WidthMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Width.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.WidthMoreLessData, filters.WidthData); // Check each option and validate the update.
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of depth filters within the catalog.
+     * Ensures that applying depth filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Catalog'.
+     */
+    @Test
+    @Tag("DepthFilters")
+    public void verifyDepthData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.DepthData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.DepthMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Depth.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.DepthMoreLessData, filters.DepthData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
 
     @AfterEach
     public void tearDown() {

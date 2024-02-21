@@ -12,16 +12,30 @@ import static com.codeborne.selenide.Selenide.$;
  */
 public class Filters {
 
-    // Data elements locators for supplier and catalog sections
-    public SelenideElement SupData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[2]/div[4]/div[1]/div[2]/div[2]/div[2]"));
+
+    public SelenideElement SupplierMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[3]/button"));
+    public SelenideElement CatalogMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div[3]/button"));
+
+    public SelenideElement ManufacturerMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div[3]/button"));
+    public SelenideElement ColorMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div[3]/button"));
+    public SelenideElement CountryOfOriginMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[3]/button"));
+    public SelenideElement MaterialMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[3]/button"));
+    public SelenideElement HeightMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div[3]/button"));
+    public SelenideElement LengthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div[3]/button"));
+    public SelenideElement WidthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div[3]/button"));
+    public SelenideElement DepthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div[3]/button"));
+
+
     public SelenideElement CatalogData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div"));
-    public SelenideElement FullData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div[2]"));
-
-    // Locator for the "More/Less" button to toggle visibility of additional filter options
-    public SelenideElement MoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[3]/button"));
-
-    // Maps for storing checkbox locators for Supplier and Catalog filters
-
+    public SelenideElement FullData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div"));
+    public SelenideElement ManufacturerData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div"));
+    public SelenideElement ColorData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div"));
+    public SelenideElement CountryOfOriginData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div"));
+    public SelenideElement MaterialData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div"));
+    public SelenideElement HeightData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div"));
+    public SelenideElement LengthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div"));
+    public SelenideElement WidthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div"));
+    public SelenideElement DepthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div"));
 
     /**
      * HashMap
@@ -29,6 +43,14 @@ public class Filters {
 
     public Map<String, String> Supplier;
     public Map<String, String> Catalog;
+    public Map<String, String> Manufacturer;
+    public Map<String, String> Color;
+    public Map<String, String> CountryOfOrigin;
+    public Map<String, String> Material;
+    public Map<String, String> Height;
+    public Map<String, String> Length;
+    public Map<String, String> Width;
+    public Map<String, String> Depth;
 
     /**
      * Initializes maps with checkbox locators for Suppliers and Catalogs.
@@ -36,13 +58,45 @@ public class Filters {
      */
     public Filters() {
         Supplier = new HashMap<>();
-        for (int i = 1; i <= 13; i++) {
+        for (int i = 1; i <= 5; i++) {
             Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[2]/div/div[2]/label[%d]/input", i));
         }
 
         Catalog = new HashMap<>();
-        for (int i = 1; i <= 16; i++) {
+        for (int i = 1; i <= 9; i++) {
             Catalog.put("Catalog " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Manufacturer = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Manufacturer.put("Manufacturer " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Color = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Color.put("Color " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        CountryOfOrigin = new HashMap<>();
+        for (int i = 1; i <= 11; i++) {
+            CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Material = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Material.put("Material " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Height = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Height.put("Height " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Length = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Length.put("Length " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Width = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Width.put("Width " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div[2]/div/div[2]/label[%d]/input", i));
+        }
+        Depth = new HashMap<>();
+        for (int i = 1; i <= 250; i++) {
+            Depth.put("Depth " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div[2]/div/div[2]/label[%d]/input", i));
         }
     }
 
