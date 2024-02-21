@@ -42,7 +42,7 @@ public class TestPairwiseFilterAlgorithm {
      *   2. Breadcrumb text is verified as 'Catalog'
      */
     @Test
-    @Tag("CatalogFilters")
+    @Tag("SuppliersFilters")
     public void verifySupplierData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 
@@ -129,6 +129,38 @@ public class TestPairwiseFilterAlgorithm {
         List<String> checkboxLocators = new ArrayList<>(filters.Color.values());
 
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.ColorMoreLessData, filters.ManufacturerData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    /**
+     * Test verifies the functionality of color filters within the catalog section.
+     * Ensures that applying color filters correctly influences the displayed catalog items.
+     * <p>
+     * Definition of Done (DOD):
+     *   1. Catalog items are present more than or equal to 12.
+     *   2. Breadcrumb text is verified as 'Manufacturer'.
+     */
+    @Test
+    @Tag("ColorFilters")
+    public void verifyManufacturerData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.ManufacturerData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        Thread.sleep(2000);
+        filters.ManufacturerMoreLessData.scrollTo().shouldBe(visible).click();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Manufacturer.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.ManufacturerMoreLessData, filters.ManufacturerData);
         actionsCatalog.waitForCatalogPage();
     }
 
