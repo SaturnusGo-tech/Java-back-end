@@ -6,49 +6,52 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.virtoworks.omnia.utils.locators.catalog.CatalogPageLocators;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
-import io.restassured.http.ContentType;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-import static java.lang.Thread.sleep;
+
 import static com.codeborne.selenide.Selenide.$x;
 
-import static com.codeborne.selenide.Selenide.sleep;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static com.codeborne.selenide.Condition.checked;
-import static com.codeborne.selenide.Selenide.$x;
-import static org.hamcrest.Matchers.greaterThan;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
-
-
 public class ActionsCatalog {
 
+    /**
+     * Loads a GraphQL query from a file located at the specified file path.
+     * <p>
+     * This method is designed to read the contents of a GraphQL query stored in a file,
+     * allowing for better maintainability and readability of tests. By storing queries
+     * in separate files, they can be easily modified and reused across different tests
+     * without cluttering the test code.
+     * <p>
+     * DOD (Definition of Done):
+     *   1. The method returns the content of the file as a String if the file is found
+     *      and accessible.
+     *   2. In case of an IOException (e.g., file not found, lack of read permissions),
+     *      the exception is caught, its stack trace is printed for debugging purposes,
+     *      and null is returned. This behavior might need to be adjusted based on
+     *      specific requirements, such as re-throwing the exception or logging it
+     *      differently.
+     *
+     * @param filePath The relative or absolute path to the file containing the GraphQL query.
+     * @return The content of the file as a String, or null if an IOException occurs.
+     */
     public String loadGraphQLQuery(String filePath) {
         try {
             return new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
             e.printStackTrace();
-            return null; // Или обработайте исключение соответствующим образом
+            return null; //Need to transfer this part of query to loader class
         }
     }
+
 
     private final CatalogPageLocators locators = new CatalogPageLocators();
 
