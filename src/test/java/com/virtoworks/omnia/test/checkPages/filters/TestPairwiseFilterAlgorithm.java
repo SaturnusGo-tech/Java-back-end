@@ -1,4 +1,4 @@
-package com.virtoworks.omnia.test.checkPages;
+package com.virtoworks.omnia.test.checkPages.filters;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;

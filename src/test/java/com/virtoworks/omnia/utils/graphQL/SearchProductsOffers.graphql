@@ -1,0 +1,18 @@
+query SearchProductsOffers($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String) {
+    products(
+        storeId: $storeId
+        userId: $userId
+        currencyCode: $currencyCode
+        cultureName: $cultureName
+        filter: $filter
+    ) {
+        items {
+            id
+            price {
+                actual {
+                    amount
+                }
+            }
+        }
+    }
+}

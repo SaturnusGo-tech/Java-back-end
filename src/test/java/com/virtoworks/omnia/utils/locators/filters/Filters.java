@@ -52,6 +52,8 @@ public class Filters {
     public Map<String, String> Width;
     public Map<String, String> Depth;
 
+
+
     /**
      * Initializes maps with checkbox locators for Suppliers and Catalogs.
      * Uses dynamic XPath generation to accommodate a varying number of checkboxes.
@@ -61,6 +63,7 @@ public class Filters {
         for (int i = 1; i <= 5; i++) {
             Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[2]/div/div[2]/label[%d]/input", i));
         }
+
 
         Catalog = new HashMap<>();
         for (int i = 1; i <= 9; i++) {

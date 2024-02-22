@@ -1,4 +1,4 @@
-package com.virtoworks.omnia.test.checkPages;
+package com.virtoworks.omnia.test.checkPages.catalog;
 
 import com.virtoworks.omnia.utils.global.Config;
 import com.virtoworks.omnia.utils.actions.catalog.ActionsCatalog;

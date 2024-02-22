@@ -10,15 +10,18 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.virtoworks.omnia.utils.locators.catalog.CatalogPageLocators;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
+import io.restassured.http.ContentType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static io.restassured.RestAssured.given;
 import static java.lang.Thread.sleep;
 import static com.codeborne.selenide.Selenide.$x;
 
@@ -28,11 +31,24 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.codeborne.selenide.Condition.checked;
 import static com.codeborne.selenide.Selenide.$x;
+import static org.hamcrest.Matchers.greaterThan;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 
 
 public class ActionsCatalog {
+
+    public String loadGraphQLQuery(String filePath) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; // Или обработайте исключение соответствующим образом
+        }
+    }
 
     private final CatalogPageLocators locators = new CatalogPageLocators();
 
@@ -112,6 +128,7 @@ public class ActionsCatalog {
                 moreLessButton.shouldBe(Condition.disappear);
             }
 
+
             // Processing data after updates if needed
             SelenideElement dataElement = retryFindElement(dataElementLocator, 10, 1000);
             if (dataElement != null) {
@@ -143,4 +160,5 @@ public class ActionsCatalog {
         System.out.println("Element not found after " + retries + " attempts.");
         return null;
     }
+
 }

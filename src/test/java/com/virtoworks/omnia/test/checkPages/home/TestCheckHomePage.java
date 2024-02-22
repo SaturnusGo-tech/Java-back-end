@@ -1,4 +1,4 @@
-package com.virtoworks.omnia.test.checkPages;
+package com.virtoworks.omnia.test.checkPages.home;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
