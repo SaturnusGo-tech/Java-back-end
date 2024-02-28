@@ -1,10 +1,11 @@
 package com.virtoworks.omnia.test.checkPages.filters;
 
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.virtoworks.omnia.utils.global.Config;
 import com.virtoworks.omnia.utils.actions.catalog.ActionsCatalog;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -15,6 +16,16 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$x;
 import static com.codeborne.selenide.Selenide.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.builder.RequestSpecBuilder;
+
+import org.junit.jupiter.api.Test;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
 
 public class TestPairwiseFilterAlgorithm {
 
@@ -31,8 +42,47 @@ public class TestPairwiseFilterAlgorithm {
     @BeforeEach
     public void setUp() {
         config.setUp("catalog");
+        RestAssured.baseURI = "https://qa-opus.omniapartners.com/xapi/graphql";
     }
 
+
+    /**
+     * Test query data
+     * Here's i've put the example part of graphql data - Need to IMP bearer token for further step
+     */
+    @Test
+    @Tag("SuppliersFilters")
+    public void verifyCheckboxClickAndGraphQLResponse() {
+
+        String authToken = getTokenFromCookie();
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        $x("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[2]/div/div[2]/label[1]/input")
+                .shouldBe(visible, enabled)
+                .click();
+
+        String requestBody = String.format(
+                "{\"query\":\"query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String], $withFacets: Boolean!, $withImages: Boolean!, $withProductOffers: Boolean!) { products(storeId: \\\"%s\\\", userId: \\\"%s\\\", currencyCode: \\\"%s\\\", cultureName: \\\"%s\\\", filter: \\\"%s\\\") { totalCount } }\",\"variables\":{\"storeId\":\"opus\", \"userId\":\"78e100ff-ea81-4aca-ad83-5f112e80fc77\", \"currencyCode\":\"USD\", \"cultureName\":\"en-US\", \"filter\":\"category.subtree:21057e9c-14df-48c1-be58-0c59a4f38f06 \\\"SupplierOuterId\\\":\\\"MOK-1\\\"\", \"after\":\"0\", \"first\":16, \"sort\":\"\", \"query\":\"\", \"fuzzy\":false, \"fuzzyLevel\":0, \"productIds\":[], \"withFacets\":true, \"withImages\":true, \"withProductOffers\":false}}",
+                "opus", "78e100ff-ea81-4aca-ad83-5f112e80fc77", "USD", "en-US", "category.subtree:21057e9c-14df-48c1-be58-0c59a4f38f06 \"SupplierOuterId\":\"MOK-1\"");
+
+        ValidatableResponse authorization = given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + authToken)
+                .body(requestBody)
+                .when()
+                .post("/xapi/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.products.totalCount", greaterThan(0));
+    }
+    /**
+     * Dynamic bearer token eater
+     */
+    public String getTokenFromCookie() {
+        return WebDriverRunner.getWebDriver().manage().getCookieNamed(".AspNetCore.Identity.Application").getValue();
+    }
     /**
      * Test verifies the functionality of supplier filters within the supplier section.
      * Ensures that applying filters correctly influences the displayed catalog items.
@@ -47,7 +97,7 @@ public class TestPairwiseFilterAlgorithm {
         actionsCatalog.waitForCatalogPage();
 
         int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
-        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(13);
 
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
@@ -57,7 +107,6 @@ public class TestPairwiseFilterAlgorithm {
 
         List<String> checkboxLocators = new ArrayList<>(filters.Supplier.values());
 
-        // Click on each checkbox and verify updates
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.SupplierMoreLessData, filters.FullData);
 
         actionsCatalog.waitForCatalogPage();
@@ -76,25 +125,22 @@ public class TestPairwiseFilterAlgorithm {
     public void verifyCatalogData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 
-        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
-        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(17, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog filters items should be at least 17").isGreaterThanOrEqualTo(17);
 
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
         filters.CatalogData.scrollTo().shouldBe(visible).click();
-
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-
         filters.CatalogMoreLessData.scrollTo().shouldBe(visible).click();
-
         actionsCatalog.waitForCatalogPage();
 
         List<String> checkboxLocators = new ArrayList<>(filters.Catalog.values());
 
-        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.SupplierMoreLessData, filters.FullData);
+        // Click on each checkbox and verify updates
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.CatalogMoreLessData, filters.CatalogData);
 
         actionsCatalog.waitForCatalogPage();
     }
@@ -112,9 +158,6 @@ public class TestPairwiseFilterAlgorithm {
     @Tag("ColorFilters")
     public void verifyColorData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
-
-        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
-        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
 
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
@@ -145,9 +188,6 @@ public class TestPairwiseFilterAlgorithm {
     public void verifyManufacturerData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 
-        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
-        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
-
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
@@ -161,6 +201,24 @@ public class TestPairwiseFilterAlgorithm {
         List<String> checkboxLocators = new ArrayList<>(filters.Manufacturer.values());
 
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.ManufacturerMoreLessData, filters.ManufacturerData);
+        actionsCatalog.waitForCatalogPage();
+    }
+
+    @Test
+    @Tag("MeasureFilters")
+    public void verifyMeasureData() throws InterruptedException {
+        actionsCatalog.waitForCatalogPage();
+
+        String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
+        assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
+
+        filters.MeasureData.scrollTo().shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        actionsCatalog.waitForCatalogPage();
+        List<String> checkboxLocators = new ArrayList<>(filters.Measure.values());
+
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.MeasureData, filters.MeasureData);
         actionsCatalog.waitForCatalogPage();
     }
 
@@ -183,7 +241,7 @@ public class TestPairwiseFilterAlgorithm {
         actionsCatalog.waitForCatalogPage();
 
         Thread.sleep(2000);
-        filters.CountryOfOriginMoreLessData.scrollTo().shouldBe(visible).click();
+        filters.ManufacturerMoreLessData.scrollTo().shouldBe(visible).click();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.CountryOfOrigin.values());
@@ -351,7 +409,6 @@ public class TestPairwiseFilterAlgorithm {
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.DepthMoreLessData, filters.DepthData);
         actionsCatalog.waitForCatalogPage();
     }
-
 
     @AfterEach
     public void tearDown() {

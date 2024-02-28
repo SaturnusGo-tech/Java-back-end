@@ -18,7 +18,7 @@ public class Filters {
 
     public SelenideElement ManufacturerMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div[3]/button"));
     public SelenideElement ColorMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div[3]/button"));
-    public SelenideElement CountryOfOriginMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[3]/button"));
+    public SelenideElement CountryOfOriginMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[3]/button"));
     public SelenideElement MaterialMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[3]/button"));
     public SelenideElement HeightMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div[3]/button"));
     public SelenideElement LengthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div[3]/button"));
@@ -30,7 +30,8 @@ public class Filters {
     public SelenideElement FullData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div"));
     public SelenideElement ManufacturerData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div"));
     public SelenideElement ColorData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div"));
-    public SelenideElement CountryOfOriginData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div"));
+    public SelenideElement MeasureData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div"));
+    public SelenideElement CountryOfOriginData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div"));
     public SelenideElement MaterialData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div"));
     public SelenideElement HeightData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div"));
     public SelenideElement LengthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div"));
@@ -45,6 +46,7 @@ public class Filters {
     public Map<String, String> Catalog;
     public Map<String, String> Manufacturer;
     public Map<String, String> Color;
+    public Map<String, String> Measure;
     public Map<String, String> CountryOfOrigin;
     public Map<String, String> Material;
     public Map<String, String> Height;
@@ -60,13 +62,13 @@ public class Filters {
      */
     public Filters() {
         Supplier = new HashMap<>();
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 13; i++) {
             Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[2]/div/div[2]/label[%d]/input", i));
         }
 
 
         Catalog = new HashMap<>();
-        for (int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 17; i++) {
             Catalog.put("Catalog " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div[2]/label[%d]/input", i));
         }
         Manufacturer = new HashMap<>();
@@ -77,9 +79,14 @@ public class Filters {
         for (int i = 1; i <= 250; i++) {
             Color.put("Color " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div[2]/div/div[2]/label[%d]/input", i));
         }
+        Measure = new HashMap<>();
+        for (int i = 1; i == 1; i++) {
+            Measure.put("Measure " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[2]/div/div/label[%d]/input", i));
+        }
+
         CountryOfOrigin = new HashMap<>();
         for (int i = 1; i <= 11; i++) {
-            CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[2]/div/div[2]/label[%d]/input", i));
+            CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[2]/div/div[2]/label[%d]/input", i));
         }
         Material = new HashMap<>();
         for (int i = 1; i <= 250; i++) {

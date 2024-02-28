@@ -6,9 +6,11 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.virtoworks.omnia.utils.locators.catalog.CatalogPageLocators;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
+import org.assertj.core.api.Assertions;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -119,20 +121,20 @@ public class ActionsCatalog {
      */
     public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) {
         for (String locator : checkboxLocators) {
-            SelenideElement checkbox = $x(locator).shouldBe(Condition.visible).shouldBe(Condition.enabled);
+            SelenideElement checkbox = $x(locator).shouldBe(visible).shouldBe(enabled);
 
-            // Click using JavaScript to avoid issues with element overlay
+            sleep(2000);
+
             checkbox.scrollIntoView("{block: \"center\"}").click();
-            checkbox.shouldBe(Condition.checked);
+            Assertions.assertThat(checkbox.isSelected()).as("Checkbox %s should be checked after click", locator).isTrue();
+            System.out.println("Clicked on checkbox: " + locator);
 
             if (checkbox.equals(moreLessButton)) {
                 moreLessButton.scrollIntoView("{block: \"center\"}").click();
-                // Smart wait for any possible UI updates after clicking "More/Less"
-                moreLessButton.shouldBe(Condition.disappear);
+                moreLessButton.should(disappear);
+                System.out.println("Clicked on 'More/Less' button.");
             }
 
-
-            // Processing data after updates if needed
             SelenideElement dataElement = retryFindElement(dataElementLocator, 10, 1000);
             if (dataElement != null) {
                 String dataText = dataElement.text();
@@ -156,12 +158,33 @@ public class ActionsCatalog {
             if (element.exists() && element.isDisplayed()) {
                 return element;
             } else {
-                // Intelligent wait using Selenide's built-in waiting mechanism
+                // built-in waiting mechanism
                 element.shouldBe(Condition.appear, Duration.ofMillis(delayInMillis));
             }
         }
         System.out.println("Element not found after " + retries + " attempts.");
         return null;
     }
+
+    /**
+     * Scrolls through the filter inner block until all checkboxes are found.
+     * @param filterContainer Selector for the filter container.
+     * @param checkboxLocator Locator for the checkboxes within the container.
+     * @param expectedCount Expected number of elements.
+     * @return Actual number of elements found.
+     */
+
+    public int scrollToFindAllCheckboxes(SelenideElement filterContainer, String checkboxLocator, int expectedCount) {
+        int itemsCount = 0;
+        while (itemsCount < expectedCount) {
+            itemsCount = filterContainer.$$x(checkboxLocator).filter(visible).size();
+            if (itemsCount < expectedCount) {
+                executeJavaScript("arguments[0].scrollTop = arguments[0].scrollHeight", filterContainer);
+                Selenide.sleep(1000);
+            }
+        }
+        return itemsCount;
+    }
+
 
 }

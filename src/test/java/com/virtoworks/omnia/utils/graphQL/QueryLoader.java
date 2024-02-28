@@ -26,7 +26,7 @@ public class QueryLoader {
             queryTemplate = loadGraphQLQuery(queryFilePath);
         } catch (IOException e) {
             LOGGER.error("Error loading GraphQL query from file: {}", queryFilePath, e);
-            return; // Or handle the exception according to some policy, i will get it latter
+            return;
         }
 
         String requestBody = String.format(queryTemplate, filter);

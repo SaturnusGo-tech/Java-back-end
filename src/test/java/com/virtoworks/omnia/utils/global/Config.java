@@ -2,6 +2,7 @@ package com.virtoworks.omnia.utils.global;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -36,12 +37,10 @@ public class Config {
         String baseUrl = environmentConfig.getUrl().endsWith("/") ? environmentConfig.getUrl() : environmentConfig.getUrl() + "/";
         open(baseUrl + endpoint);
 
-        // Исправленный селектор, предполагая, что все классы должны применяться к одному элементу
         if (Selenide.$$(".vc-button.vc-button--size--xs.vc-button--color--neutral.vc-button--outline--neutral.vc-button--icon.ml-4").isEmpty()) {
             actionsAuth.userLogin(environmentConfig.getEmail(), environmentConfig.getPassword());
         }
     }
-
 
     /**
      * Retrieves the environment-specific duration setting for timeouts.
