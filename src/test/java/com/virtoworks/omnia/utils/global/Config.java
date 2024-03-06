@@ -2,12 +2,11 @@ package com.virtoworks.omnia.utils.global;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import io.qameta.allure.selenide.AllureSelenide;
-import org.openqa.selenium.chrome.ChromeOptions;
 import com.virtoworks.omnia.utils.actions.auth.ActionsAuth;
 import com.virtoworks.omnia.utils.env.EnvironmentConfig;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import static com.codeborne.selenide.Selenide.open;
 
@@ -15,6 +14,8 @@ public class Config {
 
     private final EnvironmentConfig environmentConfig = new EnvironmentConfig("qa");
     private final ActionsAuth actionsAuth = new ActionsAuth();
+
+
 
     /**
      * Global setup for all tests, configuring browser size and page load strategy,

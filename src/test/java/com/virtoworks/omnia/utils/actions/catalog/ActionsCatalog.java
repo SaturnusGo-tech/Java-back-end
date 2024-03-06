@@ -1,37 +1,29 @@
 package com.virtoworks.omnia.utils.actions.catalog;
 
 import com.codeborne.selenide.Condition;
-
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
-
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.virtoworks.omnia.utils.locators.catalog.CatalogPageLocators;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
+import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-
-
-import static com.codeborne.selenide.Selenide.$x;
-
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import io.restassured.response.Response;
-import org.json.JSONObject;
-
-import com.google.gson.Gson;
-
-
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
+
 
 
 public class ActionsCatalog {
@@ -122,71 +114,11 @@ public class ActionsCatalog {
         }
     }
 
-    /**
-     * Performs clicks on checkboxes and verifies updates in the UI.
-     *
-     * @param filters The filters object containing the locators.
-     * @param checkboxLocators A list of locators for the checkboxes.
-     * @param moreLessButton The "More/Less" button element.
-     * @param dataElementLocator The locator for the data element to check after updates.
-     */
-    public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) {
-        Map<String, Object> currentFilters = new HashMap<>();
-        currentFilters.put("storeId", "opus");
-        currentFilters.put("userId", "78e100ff-ea81-4aca-ad83-5f112e80fc77");
-        currentFilters.put("currencyCode", "USD");
-        currentFilters.put("cultureName", "en-US");
-        currentFilters.put("first", 16);
-        currentFilters.put("sort", "");
-        currentFilters.put("query", "");
-        currentFilters.put("fuzzy", false);
-        currentFilters.put("fuzzyLevel", 0);
-        currentFilters.put("productIds", null);
 
-        for (String locator : checkboxLocators) {
-            SelenideElement checkbox = $x(locator).shouldBe(visible).shouldBe(enabled);
-
-            sleep(3000);
-
-            checkbox.scrollIntoView("{block: \"center\"}").click();
-            Assertions.assertThat(checkbox.isSelected()).as("Checkbox %s should be checked after click", locator).isTrue();
-            System.out.println("Clicked on checkbox: " + locator);
-
-            if (checkbox.equals(moreLessButton)) {
-                moreLessButton.scrollIntoView("{block: \"center\"}").click();
-                moreLessButton.should(disappear);
-                System.out.println("Clicked on 'More/Less' button.");
-            }
-
-            currentFilters.put("filter", "new filter != correct");
-
-            String responseData = sendGraphQLRequestAndGetResponseData(currentFilters);
-            System.out.println("GraphQL response data: " + responseData);
-
-            SelenideElement dataElement = retryFindElement(dataElementLocator, 10, 1000);
-            if (dataElement != null) {
-                String dataText = dataElement.text();
-                System.out.println("Data for locator " + locator + ": " + dataText);
-            } else {
-                System.out.println("Element ain't found after several attempts: " + locator);
-            }
-        }
-    }
-
-    /**
-     * Sends a GraphQL request with given filters and retrieves the response data.
-     * This method constructs a GraphQL query to fetch product details based on the provided filters.
-     * It sends the query to the GraphQL endpoint and processes the response.
-     *
-     * @param filters A map containing the filters to be applied in the GraphQL query.
-     * @return The response body as a string.
-     * @throws RuntimeException if the HTTP response code is not 200.
-     */
-    private String sendGraphQLRequestAndGetResponseData(Map<String, Object> filters) {
-        // GraphQL query to search for products with specified filters
-        String query = """
-    query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
-      products(
+    private static final String GRAPHQL_ENDPOINT = "https://qa-opus.omniapartners.com/xapi/graphql";
+    private final String Query = """
+      query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
+    products(
         storeId: $storeId,
         userId: $userId,
         currencyCode: $currencyCode,
@@ -208,34 +140,64 @@ public class ActionsCatalog {
       }
     }
     """;
+    public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) throws InterruptedException {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("storeId", "opus");
+        variables.put("userId", "78e100ff-ea81-4aca-ad83-5f112e80fc77");
+        variables.put("currencyCode", "USD");
+        variables.put("cultureName", "en-US");
+        variables.put("filter", "new filter != correct");
+        variables.put("after", "");
+        variables.put("first", 16);
+        variables.put("sort", "");
+        variables.put("query", "");
+        variables.put("fuzzy", false);
+        variables.put("fuzzyLevel", 0);
+        variables.put("productIds", new ArrayList<>());
 
-        // Constructing the request body with the query and variables
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("query", query);
-        requestBody.put("variables", new JSONObject(filters));
+        String responseData = sendGraphQLRequest(variables, Query);
+        System.out.println("Initial GraphQL response data: " + responseData);
 
-        // Sending the GraphQL request
-        Response response = given()
-                .header("Content-Type", "application/json")
-                .body(requestBody.toString())
-                .log().all()
-                .post("https://qa-opus.omniapartners.com/xapi/graphql");
+        for (String locator : checkboxLocators) {
+            Thread.sleep(1000);
 
-        // Logging the response
-        response.then().log().all();
+            SelenideElement checkbox = $x(locator).shouldBe(visible).shouldBe(enabled);
+            checkbox.scrollIntoView("{block: \"center\"}").click();
+            Assertions.assertThat(checkbox.isSelected()).as("Checkbox %s should be checked after click", locator).isTrue();
+            System.out.println("Clicked on checkbox: " + locator);
 
-        // Checking for successful response
-        if (response.getStatusCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusCode());
+            if (checkbox.equals(moreLessButton)) {
+                moreLessButton.scrollIntoView("{block: \"center\"}").click();
+                moreLessButton.should(disappear);
+                System.out.println("Clicked on 'More/Less' button.");
+            }
         }
-
-        // Returning the response body
-        return response.getBody().asString();
     }
-    /**
-     * Any way here's some prblm
-     * that the outstack filters ain't get expected result using by this case a singular methods of fetching graphql
-     */
+
+    public String sendGraphQLRequest(Map<String, Object> variables, String queryString) {
+        Gson gson = new GsonBuilder().create();
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("query", queryString);
+        requestBody.put("variables", variables);
+
+        String jsonRequestBody = gson.toJson(requestBody);
+
+        System.out.println("Sending GraphQL request with body: " + jsonRequestBody);
+
+        Response response = given()
+                .log().all()
+                .contentType("application/json")
+                .body(jsonRequestBody)
+                .when()
+                .post(GRAPHQL_ENDPOINT)
+                .then()
+                .log().all()
+                .extract()
+                .response();
+
+        return response.asString();
+    }
 
     /**
      * Retries finding an element until it's visible or the retry limit is reached.

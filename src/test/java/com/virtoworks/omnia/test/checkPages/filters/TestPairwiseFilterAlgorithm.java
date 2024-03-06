@@ -1,30 +1,16 @@
 package com.virtoworks.omnia.test.checkPages.filters;
 
-import com.codeborne.selenide.WebDriverRunner;
-import com.virtoworks.omnia.utils.global.Config;
 import com.virtoworks.omnia.utils.actions.catalog.ActionsCatalog;
+import com.virtoworks.omnia.utils.global.Config;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.Selenide.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.builder.RequestSpecBuilder;
-
-import org.junit.jupiter.api.Test;
-
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
 
 
 public class TestPairwiseFilterAlgorithm {
@@ -103,18 +89,18 @@ public class TestPairwiseFilterAlgorithm {
     public void verifySupplierData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 
-        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
-        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(13);
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(13, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog items should be at least 13").isGreaterThanOrEqualTo(13);
 
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.SupplierMoreLessData.scrollTo().shouldBe(visible).click();
+        filters.supplierMoreLessData.scrollTo().shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
         List<String> checkboxLocators = new ArrayList<>(filters.Supplier.values());
 
-        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.SupplierMoreLessData, filters.FullData);
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.supplierMoreLessData, filters.FullData);
 
         actionsCatalog.waitForCatalogPage();
     }
