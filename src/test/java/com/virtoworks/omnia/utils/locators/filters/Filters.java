@@ -1,9 +1,11 @@
 package com.virtoworks.omnia.utils.locators.filters;
 
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.By;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.codeborne.selenide.Selectors.byXpath;
 import static com.codeborne.selenide.Selenide.$;
 
 /**
@@ -11,32 +13,132 @@ import static com.codeborne.selenide.Selenide.$;
  * Provides easy access to filter elements and their locators.
  */
 public class Filters {
+    public SelenideElement supplierMoreLessData;
+
+    {
+        supplierMoreLessData = $("button[data-element-instance='filter-button: Supplier']");
+    }
+
+    public SelenideElement CatalogMoreLessData;
+
+    {
+        CatalogMoreLessData = $("button[data-element-instance='filter-button: Catalogs']");
+    }
+
+    public SelenideElement ManufacturerMoreLessData;
+
+    {
+        ManufacturerMoreLessData = $("button[data-element-instance='filter-button: Manufacturer']");
+    }
+
+    public SelenideElement ColorMoreLessData;
+
+    {
+        ColorMoreLessData = $("button[data-element-instance='filter-button: Color']");
+    }
+
+    public SelenideElement CountryOfOriginMoreLessData;
+
+    {
+        CountryOfOriginMoreLessData = $("button[data-element-instance='filter: Country of Origin']");
+    }
+
+    public SelenideElement MaterialMoreLessData;
+
+    {
+        MaterialMoreLessData = $("button[data-element-instance='filter-button: Material']");
+    }
+
+    public SelenideElement HeightMoreLessData;
+
+    {
+        HeightMoreLessData = $("button[data-element-instance='filter-button: Height']");
+    }
+
+    public SelenideElement LengthMoreLessData;
+
+    {
+        LengthMoreLessData = $("button[data-element-instance='filter-button: Length']");
+    }
+
+    public SelenideElement WidthMoreLessData;
+
+    {
+        WidthMoreLessData = $("button[data-element-instance='filter-button: Width']");
+    }
+
+    public SelenideElement DepthMoreLessData;
+
+    {
+        DepthMoreLessData = $("button[data-element-instance='filter-button: Depth']");
+    }
 
 
-    public SelenideElement supplierMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[3]/button"));
-    public SelenideElement CatalogMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div[3]/button"));
+    public SelenideElement FullData;
 
-    public SelenideElement ManufacturerMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div[3]/button"));
-    public SelenideElement ColorMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div[3]/button"));
-    public SelenideElement CountryOfOriginMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[3]/button"));
-    public SelenideElement MaterialMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[3]/button"));
-    public SelenideElement HeightMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div[3]/button"));
-    public SelenideElement LengthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div[3]/button"));
-    public SelenideElement WidthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div[3]/button"));
-    public SelenideElement DepthMoreLessData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div[3]/button"));
+    {
+        FullData = $(byXpath("//div[@data-element-instance='filter: Supplier']"));
+    }
 
+    public SelenideElement CatalogData;
 
-    public SelenideElement CatalogData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div"));
-    public SelenideElement FullData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div"));
-    public SelenideElement ManufacturerData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[3]/div"));
-    public SelenideElement ColorData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div"));
-    public SelenideElement MeasureData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div"));
-    public SelenideElement CountryOfOriginData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div"));
-    public SelenideElement MaterialData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div"));
-    public SelenideElement HeightData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[7]/div"));
-    public SelenideElement LengthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div"));
-    public SelenideElement WidthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div"));
-    public SelenideElement DepthData = $(By.xpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div"));
+    {
+        CatalogData = $(byXpath("//div[@data-element-instance='filter: Catalogs']"));
+    }
+
+    public SelenideElement ManufacturerData;
+
+    {
+        ManufacturerData = $(byXpath("//div[@data-element-instance='filter: Manufacturer']"));
+    }
+
+    public SelenideElement ColorData;
+
+    {
+        ColorData = $(byXpath("//div[@data-element-instance='filter: Color']"));
+    }
+
+    public SelenideElement MeasureData;
+
+    {
+        MeasureData = $(byXpath("//div[@data-element-instance='filter: Measure']"));
+    }
+
+    public SelenideElement  CountryOfOriginData;
+
+    {
+        CountryOfOriginData = $(byXpath("//div[@data-element-instance='filter: Country of Origin']"));
+    }
+
+    public SelenideElement MaterialData;
+
+    {
+        MaterialData = $(byXpath("//div[@data-element-instance='filter: Material']"));
+    }
+
+    public SelenideElement HeightData;
+
+    {
+        HeightData = $(byXpath("//div[@data-element-instance='filter: Height']"));
+    }
+
+    public SelenideElement LengthData;
+
+    {
+        LengthData = $(byXpath("//div[@data-element-instance='filter: Length']"));
+    }
+
+    public SelenideElement WidthData;
+
+    {
+        WidthData = $(byXpath("//div[@data-element-instance='filter: Width']"));
+    }
+
+    public SelenideElement DepthData;
+
+    {
+        DepthData = $(byXpath("//div[@data-element-instance='filter: Depth']"));
+    }
 
     /**
      * HashMap
@@ -65,8 +167,6 @@ public class Filters {
         for (int i = 1; i <= 13; i++) {
             Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[2]/div/div[2]/label[%d]/input", i));
         }
-
-
         Catalog = new HashMap<>();
         for (int i = 1; i <= 17; i++) {
             Catalog.put("Catalog " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div[2]/label[%d]/input", i));
@@ -83,7 +183,6 @@ public class Filters {
         for (int i = 1; i == 1; i++) {
             Measure.put("Measure " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[2]/div/div/label[%d]/input", i));
         }
-
         CountryOfOrigin = new HashMap<>();
         for (int i = 1; i <= 11; i++) {
             CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[2]/div/div[2]/label[%d]/input", i));
@@ -123,3 +222,5 @@ public class Filters {
         return locator;
     }
 }
+
+

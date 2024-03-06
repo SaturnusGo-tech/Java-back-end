@@ -116,30 +116,7 @@ public class ActionsCatalog {
 
 
     private static final String GRAPHQL_ENDPOINT = "https://qa-opus.omniapartners.com/xapi/graphql";
-    private final String Query = """
-      query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
-    products(
-        storeId: $storeId,
-        userId: $userId,
-        currencyCode: $currencyCode,
-        cultureName: $cultureName,
-        filter: $filter,
-        after: $after,
-        first: $first,
-        sort: $sort,
-        query: $query,
-        fuzzy: $fuzzy,
-        fuzzyLevel: $fuzzyLevel,
-        productIds: $productIds
-      ) {
-        totalCount
-        items {
-          id
-          name
-        }
-      }
-    }
-    """;
+
     public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) throws InterruptedException {
         Map<String, Object> variables = new HashMap<>();
         variables.put("storeId", "opus");
@@ -155,25 +132,52 @@ public class ActionsCatalog {
         variables.put("fuzzyLevel", 0);
         variables.put("productIds", new ArrayList<>());
 
-        String responseData = sendGraphQLRequest(variables, Query);
+        String queryString = """
+        query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
+            products(
+                storeId: $storeId,
+                userId: $userId,
+                currencyCode: $currencyCode,
+                cultureName: $cultureName,
+                filter: $filter,
+                after: $after,
+                first: $first,
+                sort: $sort,
+                query: $query,
+                fuzzy: $fuzzy,
+                fuzzyLevel: $fuzzyLevel,
+                productIds: $productIds
+            ) {
+                totalCount
+                items {
+                    id
+                    name
+                }
+            }
+        }
+        """;
+
+        String responseData = sendGraphQLRequest(variables, queryString);
         System.out.println("Initial GraphQL response data: " + responseData);
 
         for (String locator : checkboxLocators) {
-            Thread.sleep(1000);
+            Selenide.sleep(2000);
 
             SelenideElement checkbox = $x(locator).shouldBe(visible).shouldBe(enabled);
             checkbox.scrollIntoView("{block: \"center\"}").click();
+
             Assertions.assertThat(checkbox.isSelected()).as("Checkbox %s should be checked after click", locator).isTrue();
             System.out.println("Clicked on checkbox: " + locator);
 
-            if (checkbox.equals(moreLessButton)) {
+            if ($x(locator).equals(moreLessButton)) {
                 moreLessButton.scrollIntoView("{block: \"center\"}").click();
                 moreLessButton.should(disappear);
                 System.out.println("Clicked on 'More/Less' button.");
             }
+
+            Selenide.sleep(2000);
         }
     }
-
     public String sendGraphQLRequest(Map<String, Object> variables, String queryString) {
         Gson gson = new GsonBuilder().create();
 

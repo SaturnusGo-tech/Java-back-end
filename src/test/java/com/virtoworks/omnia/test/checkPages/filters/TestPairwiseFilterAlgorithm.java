@@ -38,7 +38,7 @@ public class TestPairwiseFilterAlgorithm {
      *
      *  @Test
      *     @Tag("SuppliersFilters")
-     *     public void verifyCheckboxClickAndGraphQLResponse() {
+     *     public void verifyCheckboxClickAndGraphQLResponse()
      * <p>
      *         String authToken = getTokenFromCookie();
      * <p>
