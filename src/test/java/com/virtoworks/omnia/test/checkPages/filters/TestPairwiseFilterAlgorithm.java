@@ -3,7 +3,6 @@ package com.virtoworks.omnia.test.checkPages.filters;
 import com.virtoworks.omnia.utils.actions.catalog.ActionsCatalog;
 import com.virtoworks.omnia.utils.global.Config;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
-import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ public class TestPairwiseFilterAlgorithm {
     @BeforeEach
     public void setUp() {
         config.setUp("catalog");
-        RestAssured.baseURI = "https://qa-opus.omniapartners.com/xapi/graphql";
     }
 
 

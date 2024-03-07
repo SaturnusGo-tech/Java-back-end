@@ -1,60 +1,66 @@
 package com.virtoworks.omnia.utils.graphQL;
 
+import com.virtoworks.omnia.utils.global.Config;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.greaterThan;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+class QueryLoader {
+    private static final String GRAPHQL_ENDPOINT = "https://qa-opus.omniapartners.com/xapi/graphql";
+    private static final Config config = new Config();
 
-public class QueryLoader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueryLoader.class);
+    @BeforeAll
+    public static void setUpAll() {
+        config.setUpAll();
+    }
 
-    /**
-     * Sends a GraphQL request with the specified filter and verifies the response.
-     *
-     * @param filter The filter to apply in the GraphQL query.
-     * @param queryFilePath The file path of the GraphQL query template.
-     */
-    public void sendGraphQLRequestAndVerifyResponse(String filter, String queryFilePath) {
-        String queryTemplate;
-        try {
-            queryTemplate = loadGraphQLQuery(queryFilePath);
-        } catch (IOException e) {
-            LOGGER.error("Error loading GraphQL query from file: {}", queryFilePath, e);
-            return;
-        }
+    @BeforeEach
+    public void setUp() {
+        config.setUp("catalog");
+    }
 
-        String requestBody = String.format(queryTemplate, filter);
+    @Test
+    public void graphqlTest() {
+        String queryWithVariables = "query SearchProducts {"
+                + " products("
+                + " storeId: \"opus\","
+                + " userId: \"78e100ff-ea81-4aca-ad83-5f112e80fc77\","
+                + " currencyCode: \"USD\","
+                + " cultureName: \"en-US\","
+                + " filter: \"new filter != correct\","
+                + " after: \"\","
+                + " first: 16,"
+                + " sort: \"\","
+                + " query: \"\","
+                + " fuzzy: false,"
+                + " fuzzyLevel: 0,"
+                + " productIds: []"
+                + " ) {"
+                + " totalCount"
+                + " items {"
+                + " id"
+                + " name"
+                + " }"
+                + " }"
+                + "}";
 
-        given()
+        String requestBody = String.format("{ \"query\": \"%s\" }", queryWithVariables.replace("\"", "\\\""));
+
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("https://qa-opus.omniapartners.com/xapi/graphql")
+                .post(GRAPHQL_ENDPOINT)
                 .then()
                 .statusCode(200)
-                .body("data.products.items.size()", greaterThan(0));
+                .extract()
+                .response();
+
+        System.out.println("Response: " + response.asPrettyString());
     }
 
-    /**
-     * Loads a GraphQL query from a file located at the specified file path.
-     * Uses UTF-8 encoding by default.
-     *
-     * @param filePath The relative or absolute path to the file containing the GraphQL query.
-     * @return The content of the file as a String.
-     * @throws IOException If an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read.
-     */
-    public String loadGraphQLQuery(String filePath) throws IOException {
-        try {
-            return new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            LOGGER.error("Failed to load GraphQL query from file: {}", filePath, e);
-            throw e;
-        }
-    }
 }

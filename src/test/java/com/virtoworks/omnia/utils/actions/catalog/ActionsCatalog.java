@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,46 +117,32 @@ public class ActionsCatalog {
     private static final String GRAPHQL_ENDPOINT = "https://qa-opus.omniapartners.com/xapi/graphql";
 
     public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) throws InterruptedException {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("storeId", "opus");
-        variables.put("userId", "78e100ff-ea81-4aca-ad83-5f112e80fc77");
-        variables.put("currencyCode", "USD");
-        variables.put("cultureName", "en-US");
-        variables.put("filter", "new filter != correct");
-        variables.put("after", "");
-        variables.put("first", 16);
-        variables.put("sort", "");
-        variables.put("query", "");
-        variables.put("fuzzy", false);
-        variables.put("fuzzyLevel", 0);
-        variables.put("productIds", new ArrayList<>());
-
         String queryString = """
-        query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
-            products(
-                storeId: $storeId,
-                userId: $userId,
-                currencyCode: $currencyCode,
-                cultureName: $cultureName,
-                filter: $filter,
-                after: $after,
-                first: $first,
-                sort: $sort,
-                query: $query,
-                fuzzy: $fuzzy,
-                fuzzyLevel: $fuzzyLevel,
-                productIds: $productIds
-            ) {
-                totalCount
-                items {
-                    id
-                    name
-                }
-            }
+query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
+    products(
+        storeId: "opus",
+        userId: "78e100ff-ea81-4aca-ad83-5f112e80fc77",
+        currencyCode: "USD",
+        cultureName: "en-US",
+        filter: $filter,
+        after: $after,
+        first: 16,
+        sort: $sort,
+        query: $query,
+        fuzzy: false,
+        fuzzyLevel: 0,
+        productIds: $productIds
+    ) {
+        totalCount
+        items {
+            id
+            name
         }
-        """;
+    }
+}
+""";
 
-        String responseData = sendGraphQLRequest(variables, queryString);
+        String responseData = sendGraphQLRequest(queryString);
         System.out.println("Initial GraphQL response data: " + responseData);
 
         for (String locator : checkboxLocators) {
@@ -178,12 +163,11 @@ public class ActionsCatalog {
             Selenide.sleep(2000);
         }
     }
-    public String sendGraphQLRequest(Map<String, Object> variables, String queryString) {
+    public String sendGraphQLRequest(String queryString) {
         Gson gson = new GsonBuilder().create();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("query", queryString);
-        requestBody.put("variables", variables);
 
         String jsonRequestBody = gson.toJson(requestBody);
 
