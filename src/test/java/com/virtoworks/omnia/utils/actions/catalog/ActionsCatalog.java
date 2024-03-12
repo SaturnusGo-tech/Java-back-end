@@ -1,6 +1,5 @@
 package com.virtoworks.omnia.utils.actions.catalog;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.google.gson.Gson;
@@ -23,128 +22,95 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
 
-
-
+/**
+ * ActionsCatalog class encapsulates behaviors related to catalog operations,
+ * such as loading queries, verifying items, and manipulating UI elements.
+ */
 public class ActionsCatalog {
 
+    private final CatalogPageLocators locators = new CatalogPageLocators();
+
     /**
-     * Loads a GraphQL query from a file located at the specified file path.
-     * <p>
-     * This method is designed to read the contents of a GraphQL query stored in a file,
-     * allowing for better maintainability and readability of tests. By storing queries
-     * in separate files, they can be easily modified and reused across different tests
-     * without cluttering the test code.
-     * <p>
-     * DOD (Definition of Done):
-     *   1. The method returns the content of the file as a String if the file is found
-     *      and accessible.
-     *   2. In case of an IOException (e.g., file not found, lack of read permissions),
-     *      the exception is caught, its stack trace is printed for debugging purposes,
-     *      and null is returned. This behavior might need to be adjusted based on
-     *      specific requirements, such as re-throwing the exception or logging it
-     *      differently.
+     * Load a GraphQL query from a file.
      *
-     * @param filePath The relative or absolute path to the file containing the GraphQL query.
-     * @return The content of the file as a String, or null if an IOException occurs.
+     * @param filePath Path to the file containing the GraphQL query.
+     * @return String representation of the query, or null in case of an error.
      */
     public String loadGraphQLQuery(String filePath) {
         try {
             return new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
             e.printStackTrace();
-            return null; //Need to transfer this part of query to loader class
+            return null;
         }
     }
 
-
-    private final CatalogPageLocators locators = new CatalogPageLocators();
-
     /**
-     * Verifies that the number of catalog items is greater than or equal to the expected minimum.
-     * <p>
-     * DOD:
-     *   1. Catalog items are present more than the specified expectedMinimum.
+     * Verify that a certain number of catalog items are present.
      *
-     * @param expectedMinimum The minimum number of catalog items expected.
-     * @param timeoutSeconds The duration in seconds to wait for the condition.
-     * @return The actual number of catalog items found.
+     * @param expectedMinimum Minimum expected number of items.
+     * @param timeoutSeconds  Timeout in seconds to wait for the condition.
+     * @return Actual number of items found.
      */
     public int verifyCatalogItemsPresent(int expectedMinimum, int timeoutSeconds) {
         return $$x(locators.catalogItems).shouldHave(sizeGreaterThanOrEqual(expectedMinimum), Duration.ofSeconds(timeoutSeconds)).size();
     }
 
     /**
-     * Checks the text of the breadcrumb and returns it.
-     * <p>
-     * DOD:
-     *   1. Check the breadcrumbs catalog item for the expected text.
+     * Check and return the text of a breadcrumb element.
      *
-     * @param expectedText The expected text of the breadcrumb.
-     * @param timeoutSeconds The duration in seconds to wait for the condition.
-     * @return The text of the breadcrumb.
+     * @param expectedText   Expected text to verify.
+     * @param timeoutSeconds Timeout in seconds to wait for visibility.
+     * @return Text of the breadcrumb.
      */
     public String checkBreadcrumbText(String expectedText, int timeoutSeconds) {
         return $x(locators.breadcrumb).shouldBe(visible, Duration.ofSeconds(timeoutSeconds)).getText();
     }
 
     /**
-     * Verifies the visibility of catalog items after switching visualization mode.
-     * <p>
-     * DOD:
-     *   1. Grid visualization is visible when buttonText is "Grid".
-     *   2. List visualization is visible when buttonText is "List".
+     * Verify catalog items' visibility after switching the view mode.
      *
-     * @param buttonText The text on the button that triggers the switch in visualization.
-     * @param expectedMinimum The minimum number of items expected to be visible after the switch.
-     * @param timeoutSeconds The duration in seconds to wait for the condition.
-     * @return True if the expected minimum number of items are visible after the switch, otherwise false.
+     * @param buttonText     Text on the button to switch views.
+     * @param expectedMinimum Minimum expected number of items visible.
+     * @param timeoutSeconds  Timeout in seconds to wait for the condition.
+     * @return True if the condition is met, false otherwise.
      */
     public boolean verifyVisualisationSwitch(String buttonText, int expectedMinimum, int timeoutSeconds) {
         $x(locators.visualisationSwitchButton + "[contains(text(), '" + buttonText + "')]").shouldBe(visible, Duration.ofSeconds(timeoutSeconds)).click();
         return $$x(locators.catalogItems).shouldBe(sizeGreaterThanOrEqual(expectedMinimum), Duration.ofSeconds(timeoutSeconds)).size() >= expectedMinimum;
     }
 
+    /**
+     * Waits for the catalog page to fully load.
+     */
     public void waitForCatalogPage() {
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Stopped after some error", e);
+            throw new RuntimeException("Thread was interrupted", e);
         }
     }
 
-
+    // Constant for the GraphQL endpoint URL.
     private static final String GRAPHQL_ENDPOINT = "https://qa-opus.omniapartners.com/xapi/graphql";
 
+    /**
+     * Click on checkboxes according to provided locators and check for updates.
+     *
+     * @param filters           Filters to apply.
+     * @param checkboxLocators  Locators for checkboxes.
+     * @param moreLessButton    Locator for the "More/Less" button.
+     * @param dataElementLocator Locator for the data element to observe changes.
+     * @throws InterruptedException if interrupted during sleep.
+     */
     public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) throws InterruptedException {
-        String queryString = """
-query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String]) {
-    products(
-        storeId: "opus",
-        userId: "78e100ff-ea81-4aca-ad83-5f112e80fc77",
-        currencyCode: "USD",
-        cultureName: "en-US",
-        filter: $filter,
-        after: $after,
-        first: 16,
-        sort: $sort,
-        query: $query,
-        fuzzy: false,
-        fuzzyLevel: 0,
-        productIds: $productIds
-    ) {
-        totalCount
-        items {
-            id
-            name
-        }
-    }
-}
-""";
+        String queryString = loadGraphQLQuery("/graphQL/SearchProductsOffers.graphql");
 
         String responseData = sendGraphQLRequest(queryString);
         System.out.println("Initial GraphQL response data: " + responseData);
 
+        // Iterate over and interact with checkboxes.
         for (String locator : checkboxLocators) {
             Selenide.sleep(2000);
 
@@ -154,6 +120,7 @@ query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!
             Assertions.assertThat(checkbox.isSelected()).as("Checkbox %s should be checked after click", locator).isTrue();
             System.out.println("Clicked on checkbox: " + locator);
 
+            // Specific logic for "More/Less" button.
             if ($x(locator).equals(moreLessButton)) {
                 moreLessButton.scrollIntoView("{block: \"center\"}").click();
                 moreLessButton.should(disappear);
@@ -163,70 +130,43 @@ query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!
             Selenide.sleep(2000);
         }
     }
+
+    /**
+     * Sends a GraphQL query to a server and returns the response as a string.
+     *
+     * This method constructs a GraphQL request using a given query string,
+     * sends the request to a GraphQL server, and handles the response.
+     * It serializes the query into JSON format, sends it over HTTP POST,
+     * and extracts the response body as a string.
+     *
+     * @param queryString The GraphQL query string to be sent.
+     * @return The server's response as a String.
+     */
     public String sendGraphQLRequest(String queryString) {
+        // Create a Gson instance for JSON serialization.
         Gson gson = new GsonBuilder().create();
 
+        // Prepare the request body by wrapping the query string into a map with a "query" key.
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("query", queryString);
 
+        // Serialize the map into a JSON string.
         String jsonRequestBody = gson.toJson(requestBody);
 
+        // Log the JSON request body for debugging purposes.
         System.out.println("Sending GraphQL request with body: " + jsonRequestBody);
 
+        // Send the request to the GraphQL endpoint using RestAssured,
+        // specifying the content type as application/json, setting the request body,
+        // and using HTTP POST method. Extract and return the response body as a string.
         Response response = given()
-                .log().all()
                 .contentType("application/json")
                 .body(jsonRequestBody)
-                .when()
                 .post(GRAPHQL_ENDPOINT)
                 .then()
-                .log().all()
                 .extract()
                 .response();
 
         return response.asString();
     }
-
-    /**
-     * Retries finding an element until it's visible or the retry limit is reached.
-     *
-     * @param element The Selenide element to find.
-     * @param retries Number of retries.
-     * @param delayInMillis Delay in milliseconds between retries.
-     * @return The found element or null if not found.
-     */
-    public SelenideElement retryFindElement(SelenideElement element, int retries, long delayInMillis) {
-        for (int attempt = 0; attempt < retries; attempt++) {
-            if (element.exists() && element.isDisplayed()) {
-                return element;
-            } else {
-                // built-in waiting mechanism
-                element.shouldBe(Condition.appear, Duration.ofMillis(delayInMillis));
-            }
-        }
-        System.out.println("Element not found after " + retries + " attempts.");
-        return null;
-    }
-
-    /**
-     * Scrolls through the filter inner block until all checkboxes are found.
-     * @param filterContainer Selector for the filter container.
-     * @param checkboxLocator Locator for the checkboxes within the container.
-     * @param expectedCount Expected number of elements.
-     * @return Actual number of elements found.
-     */
-
-    public int scrollToFindAllCheckboxes(SelenideElement filterContainer, String checkboxLocator, int expectedCount) {
-        int itemsCount = 0;
-        while (itemsCount < expectedCount) {
-            itemsCount = filterContainer.$$x(checkboxLocator).filter(visible).size();
-            if (itemsCount < expectedCount) {
-                executeJavaScript("arguments[0].scrollTop = arguments[0].scrollHeight", filterContainer);
-                Selenide.sleep(1000);
-            }
-        }
-        return itemsCount;
-    }
-
-
 }

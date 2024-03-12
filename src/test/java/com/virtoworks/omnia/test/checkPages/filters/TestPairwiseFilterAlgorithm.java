@@ -29,50 +29,6 @@ public class TestPairwiseFilterAlgorithm {
         config.setUp("catalog");
     }
 
-
-    /**
-     * Test query data
-     * Here's I've put the example part of graphql data - Need to IMP bearer token for further steps
-     *
-     *  @Test
-     *     @Tag("SuppliersFilters")
-     *     public void verifyCheckboxClickAndGraphQLResponse()
-     * <p>
-     *         String authToken = getTokenFromCookie();
-     * <p>
-     *         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
-     *         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
-     * <p>
-     *         $x("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[2]/div/div[2]/label[1]/input")
-     *                 .shouldBe(visible, enabled)
-     *                 .click();
-     * <p>
-     *         String requestBody = String.format(
-     *                 "{\"query\":\"query SearchProducts($storeId: String!, $userId: String!, $currencyCode: String!, $cultureName: String, $filter: String, $after: String, $first: Int, $sort: String, $query: String, $fuzzy: Boolean, $fuzzyLevel: Int, $productIds: [String], $withFacets: Boolean!, $withImages: Boolean!, $withProductOffers: Boolean!) { products(storeId: \\\"%s\\\", userId: \\\"%s\\\", currencyCode: \\\"%s\\\", cultureName: \\\"%s\\\", filter: \\\"%s\\\") { totalCount } }\",\"variables\":{\"storeId\":\"opus\", \"userId\":\"78e100ff-ea81-4aca-ad83-5f112e80fc77\", \"currencyCode\":\"USD\", \"cultureName\":\"en-US\", \"filter\":\"category.subtree:21057e9c-14df-48c1-be58-0c59a4f38f06 \\\"SupplierOuterId\\\":\\\"MOK-1\\\"\", \"after\":\"0\", \"first\":16, \"sort\":\"\", \"query\":\"\", \"fuzzy\":false, \"fuzzyLevel\":0, \"productIds\":[], \"withFacets\":true, \"withImages\":true, \"withProductOffers\":false}}",
-     *                 "opus", "78e100ff-ea81-4aca-ad83-5f112e80fc77", "USD", "en-US", "category.subtree:21057e9c-14df-48c1-be58-0c59a4f38f06 \"SupplierOuterId\":\"MOK-1\"");
-     * <p>
-     *         ValidatableResponse authorization = given()
-     *                 .contentType(ContentType.JSON)
-     *                 .header("Authorization", "Bearer " + authToken)
-     *                 .body(requestBody)
-     *                 .when()
-     *                 .post("/xapi/graphql")
-     *                 .then()
-     *                 .statusCode(200)
-     *                 .body("data.products.totalCount", greaterThan(0));
-     *     }
-     * /
-
-    /**
-     * Dynamic bearer token eater
-     *
-     * <p>
-     *
-     *  public String getTokenFromCookie() {
-     *         return WebDriverRunner.getWebDriver().manage().getCookieNamed(".AspNetCore.Identity.Application").getValue();
-     *     }
-     */
-
     /**
      * Test verifies the functionality of supplier filters within the supplier section.
      * Ensures that applying filters correctly influences the displayed catalog items.
