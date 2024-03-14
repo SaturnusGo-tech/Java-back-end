@@ -17,7 +17,7 @@ public class ProductsLocators {
     public SelenideElement IndexButton;
 
     {
-        IndexButton = $(byXpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[2]/div[3]/div[2]/div/div[1]/div[1]/button"));
+        IndexButton = $(byXpath("//*[@id=\"app\"]/div/div[4]/div/div/div/div[2]/div[3]/div[2]/div/div[1]/div[1]/button[2]"));
     }
 
 

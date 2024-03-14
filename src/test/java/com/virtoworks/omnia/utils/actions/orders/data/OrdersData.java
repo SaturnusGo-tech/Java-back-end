@@ -23,15 +23,15 @@ public class OrdersData {
     {
       "products": [
         {"id": 1, "keyword": "Global"},
-        {"id": 2, "keyword": "CDN"},
-        {"id": 3, "keyword": "Pocket Nurse"},
-        {"id": 4, "keyword": "AWS"},
-        {"id": 5, "keyword": "Low"},
-        {"id": 6, "keyword": "Lamber"},
-        {"id": 7, "keyword": "Acro"},
-        {"id": 8, "keyword": "ADP"},
-        {"id": 9, "keyword": "ABM"},
-        {"id": 10, "keyword": "AIS"},
+        {"id": 2, "keyword": "global"},
+        {"id": 3, "keyword": "global"},
+        {"id": 4, "keyword": "global"},
+        {"id": 5, "keyword": "global"},
+        {"id": 6, "keyword": "global"},
+        {"id": 7, "keyword": "global"},
+        {"id": 8, "keyword": "global"},
+        {"id": 9, "keyword": "global"},
+        {"id": 10, "keyword": "global"},
       ]
     }
     """;

@@ -9,13 +9,16 @@ import com.virtoworks.omnia.utils.locators.catalog.products.ProductsLocators;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class OrderSearchActions {
 
@@ -69,7 +72,7 @@ public class OrderSearchActions {
      * @return true if the text "No results found" is found on the page.
      */
     private boolean noResultsFound() {
-        return $(Selectors.byText("No results found")).exists();
+        return $(byText("No results found")).exists();
     }
 
     /**
@@ -82,33 +85,87 @@ public class OrderSearchActions {
             System.out.println("Attempting to search with keyword: " + keyword);
 
             SelenideElement searchInput = $(Selectors.byAttribute("placeholder", "Enter keyword..."))
-                    .shouldBe(visible, Duration.ofSeconds(10))
-                    .shouldBe(enabled);
+                    .shouldBe(visible, Duration.ofSeconds(15))
+                    .shouldBe(enabled, Duration.ofSeconds(15));
 
-            searchInput.clear();
             searchInput.setValue(keyword);
             productsLocators.IndexButton.click();
 
-            // Wait for results to load.
-            sleep();
-
             if (noResultsFound()) {
                 System.out.println("No results found. Trying another keyword.");
-                $(Selectors.byText("Reset search")).click();
-                // Wait before trying again.
-                sleep();
+                $(byText("Reset search")).click();
+
             } else {
-                break; // Successful search, exit loop.
+                break; // Successful search, exit loop.,.,.,
             }
         } while (true);
     }
 
     /**
-     * Sleeps for the given number of milliseconds.
+     * Opens the filter panel by clicking on the "Filters" button.
+     * Ensures that the filter button is visible before attempting to click.
      */
-    private void sleep() {
+    public void openUpFilters() {
+        $(byText("Filters")).shouldBe(visible, Duration.ofSeconds(15)).click();
+    }
+
+    /**
+     * Configures dropdown selections based on predefined boolean settings.
+     * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
+     * Utilizes a CSS selector to identify the dropdown arrows by their order.
+     */
+    public void setBuilderDropdownByIndex() {
+        boolean[] buttonSettings = {true, false};
+
+        for (int i = 0; i < buttonSettings.length; i++) {
+            if (buttonSettings[i]) {
+                String cssSelector = String.format(".vc-select__arrow:nth-of-type(%d)", i + 1);
+                $(cssSelector).shouldBe(visible, Duration.ofSeconds(15)).click();
+            }
+        }
+    }
+
+    /**
+     * Configures checkboxes according to a map of settings.
+     * Each entry in the map represents a checkbox's desired state (checked or unchecked)
+     * identified by a name and associated with a boolean value.
+     * Utilizes selector to target checkboxes by their order in a list.
+     */
+    public void configureCheckboxes(Map<String, Boolean> settings) {
+        Map<String, Integer> namesToIndexes = new HashMap<>();
+        namesToIndexes.put("Approval needed", 1);
+        namesToIndexes.put("Approved", 2);
+        // Add more mappings as necessary
+
+        // <- -need to fix this locator -->
+        String basePath = "/html/body/div[1]/div/div[4]/div/div/div/div[2]/div[3]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[2]/ul/li[%d]/button/span/label/input";
+
+        for (Map.Entry<String, Boolean> entry : settings.entrySet()) {
+            String name = entry.getKey();
+            Boolean shouldBeChecked = entry.getValue();
+            Integer index = namesToIndexes.get(name);
+
+            if (index != null && shouldBeChecked) {
+                String xpath = String.format(basePath, index);
+                SelenideElement checkbox = $x(xpath);
+
+                if (!checkbox.isSelected()) {
+                    checkbox.click();
+                }
+            }
+        }
+    }
+
+    /**
+     * Pauses the execution for a specified number of milliseconds.
+     * This method is used to introduce a delay in test execution, for example, to wait for page elements to load.
+     * Note: Using fixed delays is not a best practice in test automation. Consider using explicit waits where possible.
+     *
+     * @param milliseconds the number of milliseconds to pause the execution
+     */
+    private void sleep(long milliseconds) {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
