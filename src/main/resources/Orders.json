@@ -1,0 +1,13 @@
+{
+  "checkboxes": {
+    "Approval needed": {"index": 1},
+    "Approved": {"index": 2},
+    "Cancelled": {"index": 3},
+    "Completed": {"index": 4},
+    "Confirmed": {"index": 5},
+    "New": {"index": 6},
+    "Payment Required": {"index": 7},
+    "Pending": {"index": 8},
+    "Rejected": {"index": 9}
+  }
+}

@@ -9,17 +9,19 @@ import com.virtoworks.omnia.utils.actions.orders.data.OrdersData;
 import com.virtoworks.omnia.utils.locators.Orders.OrdersLocators;
 import org.openqa.selenium.By;
 
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class OrderSearchActions {
 
@@ -112,8 +114,6 @@ public class OrderSearchActions {
         filterButton.click();
     }
 
-
-
     /**
      * Configures dropdown selections based on predefined boolean settings.
      * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
@@ -137,34 +137,32 @@ public class OrderSearchActions {
      * identified by a name and associated with a boolean value.
      * Utilizes selector to target checkboxes by their order in a list.
      */
-    public void configureCheckboxes(Map<String, Boolean> settings) {
-        Map<String, Integer> namesToIndexes = new HashMap<>();
-        namesToIndexes.put("Approval needed", 1);
-        namesToIndexes.put("Approved", 2);
-        namesToIndexes.put("Cancelled", 3);
-        namesToIndexes.put("Completed", 4);
-        namesToIndexes.put("Confirmed", 5);
-        namesToIndexes.put("New", 6);
-        namesToIndexes.put("Payment Required", 7);
-        namesToIndexes.put("Pending", 8);
-        namesToIndexes.put("Rejected", 9);
+    /**
+     * Configures checkboxes according to a map of settings loaded from a JSON file.
+     */
+    public void configureCheckboxes(Map<String, Boolean> checkboxStates) {
+        try {
+            Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
+            Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
+                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("Orders.json"))), type);
+            Map<String, Map<String, Integer>> checkboxesData = data.get("checkboxes");
 
-        // <-- need to fix this locator --> \\
-        String basePath = "//*[@id=\"app\"]/div[3]/div[4]/div/div/div/div[2]/div[3]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[2]/ul/li[%d]";
-        // <-- need to fix this locator --> \\
-        for (Map.Entry<String, Boolean> entry : settings.entrySet()) {
-            String name = entry.getKey();
-            Boolean shouldBeChecked = entry.getValue();
-            Integer index = namesToIndexes.get(name);
+            ElementsCollection checkboxes = $$("input[type='checkbox']");
+            checkboxesData.forEach((name, details) -> {
+                Integer index = details.get("index") - 1;
+                Boolean shouldBeChecked = checkboxStates.get(name);
 
-            if (index != null && shouldBeChecked) {
-                String xpath = String.format(basePath, index);
-                SelenideElement checkbox = $x(xpath);
-
-                if (!checkbox.isSelected()) {
-                    checkbox.click();
+                if (shouldBeChecked != null) {
+                    SelenideElement checkbox = checkboxes.get(index);
+                    if ((shouldBeChecked && !checkbox.isSelected()) || (!shouldBeChecked && checkbox.isSelected())) {
+                        checkbox.click();
+                    }
+                } else {
+                    System.out.println("State for checkbox '" + name + "' not specified in test settings.");
                 }
-            }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

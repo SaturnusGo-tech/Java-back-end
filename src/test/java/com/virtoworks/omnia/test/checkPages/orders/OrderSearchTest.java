@@ -65,11 +65,11 @@ public class OrderSearchTest {
         searchActions.setBuilderDropdownByIndex();
 
         // Setting up criteria for checkboxes to simulate user selection in the UI.
-        Map<String, Boolean> settings = getStringBooleanMap();
-
+        Map<String, Boolean> checkboxStates = getStringBooleanMap();
         // Applying the configurations to checkboxes based on the predefined settings.
         System.out.println("Configuring checkboxes based on settings");
-        searchActions.configureCheckboxes(settings);
+        searchActions.configureCheckboxes(checkboxStates);
+
 
         // Applying the configurations and finalizing the filter setup.
         searchActions.applyConfig();
@@ -92,7 +92,7 @@ public class OrderSearchTest {
         settings.put("Completed", false);
         settings.put("Confirmed", true);
         settings.put("New", false);
-        settings.put("Payment Required", true);
+        settings.put("Payment Required", false);
         settings.put("Pending", false);
         settings.put("Rejected", true);
         return settings;
