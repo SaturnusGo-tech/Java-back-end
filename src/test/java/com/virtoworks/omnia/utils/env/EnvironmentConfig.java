@@ -23,7 +23,7 @@ public class EnvironmentConfig {
      *                The environment name should match a key in the JSON configuration file.
      */
     public EnvironmentConfig(String envName) {
-        // Load the configuration JSON file from the resources directory.
+        // Load the configuration JSON file from the resources' directory.
         InputStream is = getClass().getClassLoader().getResourceAsStream("config.json");
         if (is == null) {
             throw new RuntimeException("Cannot find 'config.json' file in the resources");

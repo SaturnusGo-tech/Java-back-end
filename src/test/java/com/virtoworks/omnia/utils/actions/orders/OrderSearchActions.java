@@ -1,11 +1,13 @@
 package com.virtoworks.omnia.utils.actions.orders;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selectors;
 import com.codeborne.selenide.SelenideElement;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.virtoworks.omnia.utils.actions.orders.data.OrdersData;
-import com.virtoworks.omnia.utils.locators.catalog.products.ProductsLocators;
+import com.virtoworks.omnia.utils.locators.Orders.OrdersLocators;
+import org.openqa.selenium.By;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -17,8 +19,7 @@ import java.util.Random;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 
 public class OrderSearchActions {
 
@@ -48,7 +49,7 @@ public class OrderSearchActions {
      * </ul>
      */
 
-    private final ProductsLocators productsLocators = new ProductsLocators();
+    private final OrdersLocators orders = new OrdersLocators();
     private final Gson gson = new Gson();
 
     /**
@@ -66,7 +67,6 @@ public class OrderSearchActions {
         int randomIndex = random.nextInt(products.size());
         return products.get(randomIndex).get("keyword");
     }
-
     /**
      * Checks if the page shows "No results found".
      * @return true if the text "No results found" is found on the page.
@@ -89,7 +89,7 @@ public class OrderSearchActions {
                     .shouldBe(enabled, Duration.ofSeconds(15));
 
             searchInput.setValue(keyword);
-            productsLocators.IndexButton.click();
+            orders.IndexButton.click();
 
             if (noResultsFound()) {
                 System.out.println("No results found. Trying another keyword.");
@@ -106,8 +106,13 @@ public class OrderSearchActions {
      * Ensures that the filter button is visible before attempting to click.
      */
     public void openUpFilters() {
-        $(byText("Filters")).shouldBe(visible, Duration.ofSeconds(15)).click();
+        SelenideElement filterButton = $(By.xpath("//button[contains(.,'Filters')]"))
+                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldBe(enabled, Duration.ofSeconds(15));
+        filterButton.click();
     }
+
+
 
     /**
      * Configures dropdown selections based on predefined boolean settings.
@@ -117,13 +122,14 @@ public class OrderSearchActions {
     public void setBuilderDropdownByIndex() {
         boolean[] buttonSettings = {true, false};
 
+        ElementsCollection dropdowns = $$(".vc-select__container");
         for (int i = 0; i < buttonSettings.length; i++) {
             if (buttonSettings[i]) {
-                String cssSelector = String.format(".vc-select__arrow:nth-of-type(%d)", i + 1);
-                $(cssSelector).shouldBe(visible, Duration.ofSeconds(15)).click();
+                dropdowns.get(i).shouldBe(visible, Duration.ofSeconds(15)).click();
             }
         }
     }
+
 
     /**
      * Configures checkboxes according to a map of settings.
@@ -135,11 +141,17 @@ public class OrderSearchActions {
         Map<String, Integer> namesToIndexes = new HashMap<>();
         namesToIndexes.put("Approval needed", 1);
         namesToIndexes.put("Approved", 2);
-        // Add more mappings as necessary
+        namesToIndexes.put("Cancelled", 3);
+        namesToIndexes.put("Completed", 4);
+        namesToIndexes.put("Confirmed", 5);
+        namesToIndexes.put("New", 6);
+        namesToIndexes.put("Payment Required", 7);
+        namesToIndexes.put("Pending", 8);
+        namesToIndexes.put("Rejected", 9);
 
-        // <- -need to fix this locator -->
-        String basePath = "/html/body/div[1]/div/div[4]/div/div/div/div[2]/div[3]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[2]/ul/li[%d]/button/span/label/input";
-
+        // <-- need to fix this locator --> \\
+        String basePath = "//*[@id=\"app\"]/div[3]/div[4]/div/div/div/div[2]/div[3]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[2]/ul/li[%d]";
+        // <-- need to fix this locator --> \\
         for (Map.Entry<String, Boolean> entry : settings.entrySet()) {
             String name = entry.getKey();
             Boolean shouldBeChecked = entry.getValue();
@@ -154,6 +166,13 @@ public class OrderSearchActions {
                 }
             }
         }
+    }
+
+    public void applyConfig() {
+        SelenideElement filterButton = $(By.xpath("//button[contains(.,'Apply')]"))
+                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldBe(enabled, Duration.ofSeconds(15));
+        filterButton.click();
     }
 
     /**

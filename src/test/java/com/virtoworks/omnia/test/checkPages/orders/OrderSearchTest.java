@@ -38,42 +38,53 @@ public class OrderSearchTest {
     }
 
     /**
-     * This test demonstrates the automated process of searching for products using random keywords,
-     * opening filters, configuring dropdowns, and checkboxes based on predefined settings.
-     * It showcases how to interact with web elements using Selenide and handle conditional logic
-     * based on the existence of elements and their states.
+     * This test demonstrates the process of executing a search operation with random keywords
+     * and applying various filters to refine the search results. It highlights key actions such as
+     * opening the filters section, configuring dropdown selections, and setting checkboxes
+     * according to predefined criteria. The test provides insight into handling dynamic web elements
+     * with Selenide and illustrates the application of explicit waits and conditional logic
+     * to ensure the correct state of web elements before interaction.
      */
     @Test
     public void testSearchWithRandomKeywords() {
-        // Log the start of the test
+        // Start of the test: Searching with random keywords.
         System.out.println("Test started: Searching with random keywords");
-        // Attempt to search for products using a randomly selected keyword.
+        // Attempt to search for orders using a randomly selected keyword.
         searchActions.attemptSearchWithRandomKeywords();
-        /*
-        Log the action of opening filters
-         Open the filters section to reveal additional search options.
-         */
+
+        // Opening the filters section to access more search options.
         System.out.println("Filters are opened");
         searchActions.openUpFilters();
 
-        /*
-         Introduce a delay to ensure filters are fully loaded and ready for interaction.
-         Note: In real tests, prefer using explicit waits over fixed delays.
-         */
+        // Introducing a brief pause to ensure that dropdowns are ready for interaction.
         System.out.println("Waiting 10 seconds before configuring dropdowns");
         sleep(10000);
 
-        /*
-        Log the configuration of dropdowns
-         */
+        // Configuring dropdowns to refine the search based on specific criteria.
         System.out.println("Configuring dropdowns");
-        // Configure dropdowns based on predefined settings (true or false).
         searchActions.setBuilderDropdownByIndex();
 
-        /*
-          Prepare settings for checkboxes.
-          Each entry represents a checkbox and whether it should be checked (true) or unchecked (false).
-         */
+        // Setting up criteria for checkboxes to simulate user selection in the UI.
+        Map<String, Boolean> settings = getStringBooleanMap();
+
+        // Applying the configurations to checkboxes based on the predefined settings.
+        System.out.println("Configuring checkboxes based on settings");
+        searchActions.configureCheckboxes(settings);
+
+        // Applying the configurations and finalizing the filter setup.
+        searchActions.applyConfig();
+        sleep(1000);
+
+        // Marking the end of the test execution.
+        System.out.println("Test finished");
+    }
+
+    /**
+     *
+     * Each entry represents a checkbox and whether it should be
+     * checked (true) or unchecked (false).
+     */
+    private static Map<String, Boolean> getStringBooleanMap() {
         Map<String, Boolean> settings = new HashMap<>();
         settings.put("Approval needed", true);
         settings.put("Approved", false);
@@ -84,20 +95,6 @@ public class OrderSearchTest {
         settings.put("Payment Required", true);
         settings.put("Pending", false);
         settings.put("Rejected", true);
-
-        /*
-         Log the configuration of checkboxes based on the settings map
-         */
-        System.out.println("Configuring checkboxes based on settings");
-        /*
-        Configure each checkbox according to the settings map. Checkboxes will be checked or unchecked based on their corresponding value in the map.
-         */
-        searchActions.configureCheckboxes(settings);
-
-        /*
-        Log the completion of the test
-         */
-        System.out.println("Test finished");
+        return settings;
     }
-
 }
