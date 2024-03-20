@@ -17,7 +17,7 @@ import static com.codeborne.selenide.Selenide.open;
  */
 public class Config {
 
-    private final EnvironmentConfig environmentConfig = new EnvironmentConfig("demo");
+    private final EnvironmentConfig environmentConfig = new EnvironmentConfig("qa");
     private final ActionsAuth actionsAuth = new ActionsAuth();
 
     /**

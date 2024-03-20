@@ -1,5 +1,6 @@
 package com.virtoworks.omnia.test.checkPages.filters;
 
+import com.codeborne.selenide.SelenideElement;
 import com.virtoworks.omnia.utils.actions.catalog.ActionsCatalog;
 import com.virtoworks.omnia.utils.global.Config;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.executeJavaScript;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -22,6 +24,10 @@ public class TestPairwiseFilterAlgorithm {
     @BeforeAll
     public static void setUpAll() {
         config.setUpAll();
+    }
+
+    private void scrollToElementWithCorrection(SelenideElement element) {
+        executeJavaScript("arguments[0].scrollIntoView(true); window.scrollBy(0, -100);", element);
     }
 
     @BeforeEach
@@ -49,7 +55,12 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.supplierMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.FullData);
+        filters.FullData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
+
+        scrollToElementWithCorrection(filters.supplierMoreLessData);
+        filters.supplierMoreLessData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
         List<String> checkboxLocators = new ArrayList<>(filters.Supplier.values());
@@ -78,15 +89,16 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.CatalogData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.CatalogData);
+        filters.CatalogData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        filters.CatalogMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.CatalogMoreLessData);
+        filters.CatalogMoreLessData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
         List<String> checkboxLocators = new ArrayList<>(filters.Catalog.values());
 
-        // Click on each checkbox and verify updates
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.CatalogMoreLessData, filters.CatalogData);
 
         actionsCatalog.waitForCatalogPage();
@@ -109,16 +121,18 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.ColorData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.ColorData);
+        filters.ColorData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.ColorMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.ColorMoreLessData);
+        filters.ColorMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Color.values());
 
-        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.ColorMoreLessData, filters.ManufacturerData);
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.ColorMoreLessData, filters.ColorData);
         actionsCatalog.waitForCatalogPage();
     }
 
@@ -138,11 +152,13 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.ManufacturerData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.ManufacturerData);
+        filters.ManufacturerData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.ManufacturerMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.ManufacturerMoreLessData);
+        filters.ManufacturerMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Manufacturer.values());
@@ -159,8 +175,10 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.MeasureData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.MeasureData);
+        filters.MeasureData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
+
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Measure.values());
@@ -184,11 +202,13 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.CountryOfOriginData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.CountryOfOriginData);
+        filters.CountryOfOriginData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.ManufacturerMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.CountryOfOriginMoreLessData);
+        filters.CountryOfOriginMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.CountryOfOrigin.values());
@@ -216,11 +236,13 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.MaterialData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.MaterialData);
+        filters.MaterialData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.MaterialMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.MaterialMoreLessData);
+        filters.MaterialMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Material.values());
@@ -248,11 +270,13 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.HeightData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.HeightData);
+        filters.HeightData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.HeightMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.HeightMoreLessData);
+        filters.HeightMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Height.values());
@@ -280,11 +304,13 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.LengthData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.LengthData);
+        filters.LengthData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.LengthMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.LengthMoreLessData);
+        filters.LengthMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Length.values());
@@ -312,16 +338,19 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).isEqualTo("Catalog").as("Breadcrumb text should match 'Catalog'");
 
-        filters.WidthData.scrollTo().shouldBe(visible).click();
+
+        scrollToElementWithCorrection(filters.WidthData);
+        filters.WidthData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.WidthMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.WidthMoreLessData);
+        filters.WidthMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Width.values());
 
-        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.WidthMoreLessData, filters.WidthData); // Check each option and validate the update.
+        actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.WidthMoreLessData, filters.WidthData);
         actionsCatalog.waitForCatalogPage();
     }
 
@@ -344,11 +373,13 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        filters.DepthData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.DepthData);
+        filters.DepthData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        Thread.sleep(2000);
-        filters.DepthMoreLessData.scrollTo().shouldBe(visible).click();
+        scrollToElementWithCorrection(filters.DepthMoreLessData);
+        filters.DepthMoreLessData.shouldBe(visible).click();
+        actionsCatalog.waitForCatalogPage();
 
         actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Depth.values());

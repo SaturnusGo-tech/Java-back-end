@@ -1,5 +1,6 @@
 package com.virtoworks.omnia.utils.actions.catalog;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.google.gson.Gson;
@@ -7,15 +8,12 @@ import com.google.gson.GsonBuilder;
 import com.virtoworks.omnia.utils.locators.catalog.CatalogPageLocators;
 import com.virtoworks.omnia.utils.locators.filters.Filters;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 import static com.codeborne.selenide.Condition.*;
@@ -97,37 +95,34 @@ public class ActionsCatalog {
 
     /**
      * Click on checkboxes according to provided locators and check for updates.
-     *
-     * @param filters           Filters to apply.
-     * @param checkboxLocators  Locators for checkboxes.
-     * @param moreLessButton    Locator for the "More/Less" button.
-     * @param dataElementLocator Locator for the data element to observe changes.
-     * @throws InterruptedException if interrupted during sleep.
      */
+    public void clickWithJS(SelenideElement element) {
+        executeJavaScript("arguments[0].click();", element);
+    }
+
     public void clickCheckboxesAndCheckUpdates(Filters filters, List<String> checkboxLocators, SelenideElement moreLessButton, SelenideElement dataElementLocator) throws InterruptedException {
-        String queryString = loadGraphQLQuery("/graphQL/SearchProductsOffers.graphql");
+        Set<String> clickedCheckboxes = new HashSet<>();
 
-        String responseData = sendGraphQLRequest(queryString);
-        System.out.println("Initial GraphQL response data: " + responseData);
-
-        // Iterate over and interact with checkboxes.
         for (String locator : checkboxLocators) {
-            Selenide.sleep(2000);
-
             SelenideElement checkbox = $x(locator).shouldBe(visible).shouldBe(enabled);
-            checkbox.scrollIntoView("{block: \"center\"}").click();
 
-            Assertions.assertThat(checkbox.isSelected()).as("Checkbox %s should be checked after click", locator).isTrue();
-            System.out.println("Clicked on checkbox: " + locator);
+            if (!clickedCheckboxes.contains(locator) && !checkbox.isSelected()) {
+                clickWithJS(checkbox);
+                clickedCheckboxes.add(locator);
 
-            // Specific logic for "More/Less" button.
+                checkbox.shouldBe(Condition.checked);
+                System.out.println("Clicked on checkbox: " + locator);
+            } else {
+                System.out.println("Checkbox " + locator + " is already clicked or selected.");
+            }
+
             if ($x(locator).equals(moreLessButton)) {
                 moreLessButton.scrollIntoView("{block: \"center\"}").click();
                 moreLessButton.should(disappear);
                 System.out.println("Clicked on 'More/Less' button.");
             }
 
-            Selenide.sleep(2000);
+            Selenide.sleep(500);
         }
     }
 
