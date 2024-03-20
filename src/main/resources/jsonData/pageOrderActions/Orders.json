@@ -1,5 +1,5 @@
 {
-  "checkboxes": {
+  "dataOrders": {
     "Approval needed": {"index": 1},
     "Approved": {"index": 2},
     "Cancelled": {"index": 3},
@@ -9,5 +9,11 @@
     "Payment Required": {"index": 7},
     "Pending": {"index": 8},
     "Rejected": {"index": 9}
+  },
+  "dataSuppliers": {
+    "Global Industrial": {"index": 10},
+    "ODP Business Solutions, LLC (formerly Office Depot)": {"index": 11},
+    "Pocket Nurse": {"index": 12},
+    "Quill Corporation": {"index": 13}
   }
 }

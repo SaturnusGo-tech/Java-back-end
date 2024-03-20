@@ -1,6 +1,6 @@
 package com.virtoworks.omnia.test.checkPages.orders;
 
-import com.virtoworks.omnia.utils.actions.orders.OrderSearchActions;
+import com.virtoworks.omnia.utils.actions.orders.PageOrderSearchActions;
 import com.virtoworks.omnia.utils.global.Config;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +14,12 @@ import static com.codeborne.selenide.Selenide.sleep;
 /**
  * Test class to verify the functionality of searching orders with random keywords.
  */
-public class OrderSearchTest {
+public class PageOrderSearchTest {
 
     // Global configuration for setting up the environment before running tests.
     private static final Config config = new Config();
     // Actions to perform order searches.
-    private final OrderSearchActions searchActions = new OrderSearchActions();
+    private final PageOrderSearchActions searchActions = new PageOrderSearchActions();
 
     /**
      * Set up configuration that applies to all tests in this class.
@@ -60,16 +60,16 @@ public class OrderSearchTest {
         System.out.println("Waiting 10 seconds before configuring dropdowns");
         sleep(10000);
 
-        // Configuring dropdowns to refine the search based on specific criteria.
-        System.out.println("Configuring dropdowns");
-        searchActions.setBuilderDropdownByIndex();
-
         // Setting up criteria for checkboxes to simulate user selection in the UI.
-        Map<String, Boolean> checkboxStates = getStringBooleanMap();
+        Map<String, Boolean> checkboxStatesStatusData = getStringBooleanMapStatusData();
         // Applying the configurations to checkboxes based on the predefined settings.
         System.out.println("Configuring checkboxes based on settings");
-        searchActions.configureCheckboxes(checkboxStates);
+        searchActions.ordersSearchSettings(checkboxStatesStatusData);
 
+        // Setting up criteria for checkboxes to simulate user selection in the UI.
+        Map<String, Boolean> checkboxStatesSupData = getStringBooleanMapSupData();
+        searchActions.suppliersSearchSettings(checkboxStatesSupData);
+        sleep(4000);
 
         // Applying the configurations and finalizing the filter setup.
         searchActions.applyConfig();
@@ -78,16 +78,15 @@ public class OrderSearchTest {
         // Marking the end of the test execution.
         System.out.println("Test finished");
     }
-
     /**
      *
      * Each entry represents a checkbox and whether it should be
      * checked (true) or unchecked (false).
      */
-    private static Map<String, Boolean> getStringBooleanMap() {
+    private static Map<String, Boolean> getStringBooleanMapStatusData() {
         Map<String, Boolean> settings = new HashMap<>();
         settings.put("Approval needed", true);
-        settings.put("Approved", false);
+        settings.put("Approved", true);
         settings.put("Cancelled", true);
         settings.put("Completed", false);
         settings.put("Confirmed", true);
@@ -97,4 +96,13 @@ public class OrderSearchTest {
         settings.put("Rejected", true);
         return settings;
     }
+    private static Map<String, Boolean> getStringBooleanMapSupData() {
+        Map<String, Boolean> settings = new HashMap<>();
+        settings.put("Global Industrial", true);
+        settings.put("ODP Business Solutions, LLC (formerly Office Depot)", true);
+        settings.put("Pocket Nurse", false);
+        settings.put("Quill Corporation", false);
+        return settings;
+    }
+
 }

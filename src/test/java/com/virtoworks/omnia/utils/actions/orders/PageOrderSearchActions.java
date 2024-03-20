@@ -23,7 +23,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class OrderSearchActions {
+public class PageOrderSearchActions {
 
     /**
      * Enters a random orders keyword into the search input.
@@ -91,17 +91,23 @@ public class OrderSearchActions {
                     .shouldBe(enabled, Duration.ofSeconds(15));
 
             searchInput.setValue(keyword);
-            orders.IndexButton.click();
+            System.out.println("Search keyword set to: " + keyword);
+
+            orders.IndexButton.shouldBe(visible, Duration.ofSeconds(15))
+                    .shouldBe(enabled, Duration.ofSeconds(15))
+                    .click();
+            System.out.println("Search button clicked.");
 
             if (noResultsFound()) {
-                System.out.println("No results found. Trying another keyword.");
+                System.out.println("No results found with keyword: " + keyword + ". Trying another keyword.");
                 $(byText("Reset search")).click();
-
             } else {
-                break; // Successful search, exit loop.,.,.,
+                System.out.println("Results found for keyword: " + keyword);
+                break;
             }
         } while (true);
     }
+
 
     /**
      * Opens the filter panel by clicking on the "Filters" button.
@@ -112,6 +118,16 @@ public class OrderSearchActions {
                 .shouldBe(visible, Duration.ofSeconds(15))
                 .shouldBe(enabled, Duration.ofSeconds(15));
         filterButton.click();
+        System.out.println("Filter button clicked.");
+
+        SelenideElement filterBlock = $(By.xpath("//*[@id='app']/div[3]/div[4]/div/div/div/div[2]/div[3]/div[1]/button[2]")) // <-- need to fix this locator -->
+                .shouldBe(visible, Duration.ofSeconds(15));
+
+        if (filterBlock.exists()) {
+            System.out.println("Filter block is now visible.");
+        } else {
+            System.err.println("Filter block did not become visible as expected.");
+        }
     }
 
     /**
@@ -119,17 +135,35 @@ public class OrderSearchActions {
      * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
      * Utilizes a CSS selector to identify the dropdown arrows by their order.
      */
-    public void setBuilderDropdownByIndex() {
-        boolean[] buttonSettings = {true, false};
 
+    public void clickDropdownByIndex(int index, boolean withDelay) {
         ElementsCollection dropdowns = $$(".vc-select__container");
-        for (int i = 0; i < buttonSettings.length; i++) {
-            if (buttonSettings[i]) {
-                dropdowns.get(i).shouldBe(visible, Duration.ofSeconds(15)).click();
-            }
+        SelenideElement dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
+        dropdown.click();
+        System.out.println("Dropdown at index " + index + " clicked.");
+        if (withDelay) {
+            sleep(7000);
+
+            dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
+            dropdown.click();
+            System.out.println("Dropdown at index " + index + " clicked again after 7 seconds.");
         }
     }
 
+    /**
+     * Action to close dropdown with -0 index
+     */
+    public void closeDropByIndex() {
+        SelenideElement filterButton = $$(".vc-select__arrow").first();
+        filterButton.click();
+        System.out.println("Attempted to click the Apply button.");
+
+        if (filterButton.is(visible) && filterButton.is(enabled)) {
+            System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
+        } else {
+            System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+        }
+    }
 
     /**
      * Configures checkboxes according to a map of settings.
@@ -137,40 +171,106 @@ public class OrderSearchActions {
      * identified by a name and associated with a boolean value.
      * Utilizes selector to target checkboxes by their order in a list.
      */
-    /**
-     * Configures checkboxes according to a map of settings loaded from a JSON file.
-     */
-    public void configureCheckboxes(Map<String, Boolean> checkboxStates) {
+    public void ordersSearchSettings(Map<String, Boolean> checkboxStatesStatusData) {
         try {
             Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
             Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
-                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("Orders.json"))), type);
-            Map<String, Map<String, Integer>> checkboxesData = data.get("checkboxes");
+                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/Orders.json"))), type);
+            Map<String, Map<String, Integer>> checkboxesData = data.get("dataOrders");
+
+            clickDropdownByIndex(0, true);
 
             ElementsCollection checkboxes = $$("input[type='checkbox']");
             checkboxesData.forEach((name, details) -> {
                 Integer index = details.get("index") - 1;
-                Boolean shouldBeChecked = checkboxStates.get(name);
+                Boolean shouldBeChecked = checkboxStatesStatusData.get(name);
 
                 if (shouldBeChecked != null) {
                     SelenideElement checkbox = checkboxes.get(index);
-                    if ((shouldBeChecked && !checkbox.isSelected()) || (!shouldBeChecked && checkbox.isSelected())) {
+                    boolean isSelected = checkbox.isSelected();
+
+                    if (shouldBeChecked && !isSelected) {
                         checkbox.click();
+
+                        System.out.println("Checkbox '" + name + "' was clicked to change to desired state: true");
+
+                    } else if (!shouldBeChecked && isSelected) {
+                        System.err.println("Checkbox '" + name + "' is in an incorrect state and should be unchecked, but no action was taken.");
+
+                    } else {
+                        System.out.println("Checkbox '" + name + "' is already in the desired state: " + shouldBeChecked);
                     }
+
                 } else {
-                    System.out.println("State for checkbox '" + name + "' not specified in test settings.");
+                    System.err.println("State for checkbox '" + name + "' not specified in test settings.");
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("An exception occurred during the checkbox state configuration: " + e.getMessage());
+        }
+        closeDropByIndex();
+    }
+
+    /**
+     * Configures checkboxes according to a map of settings.
+     * Each entry in the map represents a checkbox's desired state (checked or unchecked)
+     * identified by a name and associated with a boolean value.
+     * Utilizes selector to target checkboxes by their order in a list.
+     */
+    public void suppliersSearchSettings(Map<String, Boolean> checkboxStatesSupData) {
+        try {
+            Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
+            Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
+                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/Orders.json"))), type);
+            Map<String, Map<String, Integer>> checkboxesData = data.get("dataSuppliers");
+
+            clickDropdownByIndex(1, true);
+
+            ElementsCollection checkboxes = $$("input[type='checkbox']");
+            checkboxesData.forEach((name, details) -> {
+                Integer index = details.get("index") - 1;
+                if (index >= 9) {
+                    Boolean shouldBeChecked = checkboxStatesSupData.get(name);
+                    if (shouldBeChecked != null) {
+                        SelenideElement checkbox = checkboxes.get(index).shouldBe(visible, Duration.ofSeconds(15));
+                        checkbox.scrollTo();
+
+                        boolean isSelected = checkbox.isSelected();
+
+                        if (shouldBeChecked && !isSelected) {
+                            checkbox.click();
+                            System.out.println("Supplier checkbox '" + name + "' was clicked to change to desired state: true.");
+                        } else if (!shouldBeChecked && isSelected) {
+                            checkbox.click();
+                            System.out.println("Supplier checkbox '" + name + "' was clicked to change to desired state: false.");
+                        } else {
+                            System.out.println("Supplier checkbox '" + name + "' is already in the desired state: " + shouldBeChecked + ".");
+                        }
+                    } else {
+                        System.err.println("State for supplier checkbox '" + name + "' not specified in test settings.");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("An exception occurred during the supplier checkbox state configuration: " + e.getMessage());
         }
     }
+
 
     public void applyConfig() {
         SelenideElement filterButton = $(By.xpath("//button[contains(.,'Apply')]"))
                 .shouldBe(visible, Duration.ofSeconds(15))
                 .shouldBe(enabled, Duration.ofSeconds(15));
         filterButton.click();
+        System.out.println("Attempted to click the Apply button.");
+
+        if (filterButton.is(visible) && filterButton.is(enabled)) {
+            System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
+        } else {
+            System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+        }
     }
 
     /**
