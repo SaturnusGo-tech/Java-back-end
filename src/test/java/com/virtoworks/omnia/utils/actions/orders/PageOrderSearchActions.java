@@ -9,6 +9,8 @@ import com.virtoworks.omnia.utils.actions.orders.data.OrdersData;
 import com.virtoworks.omnia.utils.locators.Orders.OrdersLocators;
 import org.openqa.selenium.By;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
@@ -108,25 +111,50 @@ public class PageOrderSearchActions {
         } while (true);
     }
 
-
     /**
      * Opens the filter panel by clicking on the "Filters" button.
      * Ensures that the filter button is visible before attempting to click.
      */
     public void openUpFilters() {
-        SelenideElement filterButton = $(By.xpath("//button[contains(.,'Filters')]"))
-                .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldBe(enabled, Duration.ofSeconds(15));
-        filterButton.click();
-        System.out.println("Filter button clicked.");
+        try {
+            Type type = new TypeToken<Map<String, Object>>() {}.getType();
+            Gson gson = new Gson();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
+            if (inputStream == null) {
+                throw new FileNotFoundException("JSON file not found.");
+            }
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            Map<String, Object> data = gson.fromJson(reader, type);
 
-        SelenideElement filterBlock = $(By.xpath("//*[@id='app']/div[3]/div[4]/div/div/div/div[2]/div[3]/div[1]/button[2]")) // <-- need to fix this locator -->
-                .shouldBe(visible, Duration.ofSeconds(15));
+            Map<String, String> locators = (Map<String, String>) data.get("OpenUpFilters");
 
-        if (filterBlock.exists()) {
-            System.out.println("Filter block is now visible.");
-        } else {
-            System.err.println("Filter block did not become visible as expected.");
+            if (locators == null) {
+                throw new NullPointerException("Locator map not found in JSON.");
+            }
+
+            String filterButtonLocator = locators.get("filterButtonLocator");
+            String filterBlockLocator = locators.get("filterBlockLocator");
+
+            if (filterButtonLocator == null || filterBlockLocator == null) {
+                throw new NullPointerException("Locator keys not found in JSON.");
+            }
+
+            SelenideElement filterButton = $(By.xpath(filterButtonLocator))
+                    .shouldBe(visible, Duration.ofSeconds(15))
+                    .shouldBe(enabled, Duration.ofSeconds(15));
+            filterButton.click();
+            System.out.println("Filter button clicked.");
+
+            SelenideElement filterBlock = $(By.xpath(filterBlockLocator))
+                    .shouldBe(visible, Duration.ofSeconds(15));
+
+            if (filterBlock.exists()) {
+                System.out.println("Filter block is now visible.");
+            } else {
+                System.err.println("Filter block did not become visible as expected.");
+            }
+        } catch (FileNotFoundException | NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -136,17 +164,41 @@ public class PageOrderSearchActions {
      * Utilizes a CSS selector to identify the dropdown arrows by their order.
      */
 
+    /**
+     * Configures dropdown selections based on predefined boolean settings.
+     * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
+     * Utilizes a CSS selector to identify the dropdown arrows by their order.
+     */
     public void clickDropdownByIndex(int index, boolean withDelay) {
-        ElementsCollection dropdowns = $$(".vc-select__container");
-        SelenideElement dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
-        dropdown.click();
-        System.out.println("Dropdown at index " + index + " clicked.");
-        if (withDelay) {
-            sleep(7000);
+        try {
+            Type type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
+            Gson gson = new Gson();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
+            if (inputStream == null) {
+                throw new FileNotFoundException("JSON file not found.");
+            }
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            Map<String, Map<String, String>> data = gson.fromJson(reader, type);
 
-            dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
+            String dropdownLocator = data.get("clickDropdownByIndex").get("locator");
+
+            if (dropdownLocator == null) {
+                throw new NullPointerException("Dropdown locator not found in JSON.");
+            }
+
+            ElementsCollection dropdowns = $$(dropdownLocator);
+            SelenideElement dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
             dropdown.click();
-            System.out.println("Dropdown at index " + index + " clicked again after 7 seconds.");
+
+            System.out.println("Dropdown at index " + index + " clicked.");
+            if (withDelay) {
+                TimeUnit.SECONDS.sleep(7);
+                dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
+                dropdown.click();
+                System.out.println("Dropdown at index " + index + " clicked again after 7 seconds.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -154,17 +206,36 @@ public class PageOrderSearchActions {
      * Action to close dropdown with -0 index
      */
     public void closeDropByIndex() {
-        SelenideElement filterButton = $$(".vc-select__arrow").first();
-        filterButton.click();
-        System.out.println("Attempted to click the Apply button.");
+        try {
+            Type type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
+            Gson gson = new Gson();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
+            if (inputStream == null) {
+                throw new FileNotFoundException("JSON file not found.");
+            }
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            Map<String, Map<String, String>> data = gson.fromJson(reader, type);
 
-        if (filterButton.is(visible) && filterButton.is(enabled)) {
-            System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
-        } else {
-            System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+            String closeDropLocator = data.get("closeDropByIndex").get("locator");
+
+            if (closeDropLocator == null) {
+                throw new NullPointerException("Close drop locator not found in JSON.");
+            }
+
+            SelenideElement closeButton = $$(closeDropLocator).first();
+            closeButton.click();
+            System.out.println("Close button clicked.");
+
+            if (closeButton.is(visible) && closeButton.is(enabled)) {
+                System.out.println("The close button is still visible and enabled, indicating it might not have triggered its intended action.");
+            } else {
+                System.out.println("The close button's state changed after clicking, indicating the click may have triggered its intended action.");
+            }
+        } catch (FileNotFoundException | NullPointerException e) {
+            e.printStackTrace();
+            System.err.println("An exception occurred: " + e.getMessage());
         }
     }
-
     /**
      * Configures checkboxes according to a map of settings.
      * Each entry in the map represents a checkbox's desired state (checked or unchecked)
@@ -175,12 +246,12 @@ public class PageOrderSearchActions {
         try {
             Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
             Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
-                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/Orders.json"))), type);
+                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json"))), type);
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataOrders");
 
             clickDropdownByIndex(0, true);
 
-            ElementsCollection checkboxes = $$("input[type='checkbox']");
+            ElementsCollection checkboxes = $$("input[type='checkbox']"); // <-- This locator may affect bad to use to it from json list Due to the index of checkboxes that are read from this file and passed into the method mapping.
             checkboxesData.forEach((name, details) -> {
                 Integer index = details.get("index") - 1;
                 Boolean shouldBeChecked = checkboxStatesStatusData.get(name);
@@ -222,12 +293,12 @@ public class PageOrderSearchActions {
         try {
             Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
             Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
-                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/Orders.json"))), type);
+                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json"))), type);
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataSuppliers");
 
             clickDropdownByIndex(1, true);
 
-            ElementsCollection checkboxes = $$("input[type='checkbox']");
+            ElementsCollection checkboxes = $$("input[type='checkbox']"); // <-- This locator may affect bad to use to it from json list Due to the index of checkboxes that are read from this file and passed into the method mapping.
             checkboxesData.forEach((name, details) -> {
                 Integer index = details.get("index") - 1;
                 if (index >= 9) {
@@ -260,19 +331,37 @@ public class PageOrderSearchActions {
 
 
     public void applyConfig() {
-        SelenideElement filterButton = $(By.xpath("//button[contains(.,'Apply')]"))
-                .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldBe(enabled, Duration.ofSeconds(15));
-        filterButton.click();
-        System.out.println("Attempted to click the Apply button.");
+        try {
+            Type type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
+            Gson gson = new Gson();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
+            if (inputStream == null) {
+                throw new FileNotFoundException("JSON file not found.");
+            }
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            Map<String, Map<String, String>> data = gson.fromJson(reader, type);
 
-        if (filterButton.is(visible) && filterButton.is(enabled)) {
-            System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
-        } else {
-            System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+            String applyButtonLocator = data.get("applyConfig").get("locator");
+
+            if (applyButtonLocator == null) {
+                throw new NullPointerException("Apply button locator not found in JSON.");
+            }
+
+            SelenideElement filterButton = $(By.xpath(applyButtonLocator))
+                    .shouldBe(visible, Duration.ofSeconds(15))
+                    .shouldBe(enabled, Duration.ofSeconds(15));
+            filterButton.click();
+            System.out.println("Attempted to click the Apply button.");
+
+            if (filterButton.is(visible) && filterButton.is(enabled)) {
+                System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
+            } else {
+                System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+            }
+        } catch (FileNotFoundException | NullPointerException e) {
+            e.printStackTrace();
         }
     }
-
     /**
      * Pauses the execution for a specified number of milliseconds.
      * This method is used to introduce a delay in test execution, for example, to wait for page elements to load.
