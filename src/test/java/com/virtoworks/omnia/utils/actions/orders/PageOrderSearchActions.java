@@ -5,18 +5,17 @@ import com.codeborne.selenide.Selectors;
 import com.codeborne.selenide.SelenideElement;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.virtoworks.omnia.utils.actions.json.JsonLoader;
 import com.virtoworks.omnia.utils.actions.orders.data.OrdersData;
 import com.virtoworks.omnia.utils.locators.Orders.OrdersLocators;
 import org.openqa.selenium.By;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -117,20 +116,15 @@ public class PageOrderSearchActions {
      */
     public void openUpFilters() {
         try {
-            Type type = new TypeToken<Map<String, Object>>() {}.getType();
-            Gson gson = new Gson();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
-            if (inputStream == null) {
-                throw new FileNotFoundException("JSON file not found.");
-            }
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            Map<String, Object> data = gson.fromJson(reader, type);
+            JsonLoader jsonLoader = new JsonLoader();
+            Map<String, Object> data = Collections.unmodifiableMap(
+                    jsonLoader.loadJsonData("jsonData/pageOrderActions/PageOrderSearchTest.json", this.getClass()));
 
-            Map<String, String> locators = (Map<String, String>) data.get("OpenUpFilters");
-
-            if (locators == null) {
-                throw new NullPointerException("Locator map not found in JSON.");
+            Object locatorsObj = data.get("OpenUpFilters");
+            if (!(locatorsObj instanceof Map)) {
+                throw new ClassCastException("Expected OpenUpFilters to be a Map.");
             }
+            Map<String, String> locators = Collections.unmodifiableMap((Map<String, String>) locatorsObj);
 
             String filterButtonLocator = locators.get("filterButtonLocator");
             String filterBlockLocator = locators.get("filterBlockLocator");
@@ -153,7 +147,7 @@ public class PageOrderSearchActions {
             } else {
                 System.err.println("Filter block did not become visible as expected.");
             }
-        } catch (FileNotFoundException | NullPointerException e) {
+        } catch (FileNotFoundException | ClassCastException | NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -171,22 +165,16 @@ public class PageOrderSearchActions {
      */
     public void clickDropdownByIndex(int index, boolean withDelay) {
         try {
-            Type type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
-            Gson gson = new Gson();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
-            if (inputStream == null) {
-                throw new FileNotFoundException("JSON file not found.");
-            }
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            Map<String, Map<String, String>> data = gson.fromJson(reader, type);
+            JsonLoader jsonLoader = new JsonLoader();
+            Map<String, Map<String, String>> data =
+                    jsonLoader.loadJsonData("jsonData/pageOrderActions/PageOrderSearchTest.json", this.getClass());
+            String clickDropdownByIndex = data.get("clickDropdownByIndex").get("locator");
 
-            String dropdownLocator = data.get("clickDropdownByIndex").get("locator");
-
-            if (dropdownLocator == null) {
-                throw new NullPointerException("Dropdown locator not found in JSON.");
+            if (clickDropdownByIndex == null) {
+                throw new NullPointerException("Locator for 'closeDropByIndex' not found in JSON.");
             }
 
-            ElementsCollection dropdowns = $$(dropdownLocator);
+            ElementsCollection dropdowns = $$(clickDropdownByIndex);
             SelenideElement dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
             dropdown.click();
 
@@ -207,21 +195,14 @@ public class PageOrderSearchActions {
      */
     public void closeDropByIndex() {
         try {
-            Type type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
-            Gson gson = new Gson();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
-            if (inputStream == null) {
-                throw new FileNotFoundException("JSON file not found.");
-            }
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            Map<String, Map<String, String>> data = gson.fromJson(reader, type);
-
+            JsonLoader jsonLoader = new JsonLoader();
+            Map<String, Map<String, String>> data =
+                    jsonLoader.loadJsonData("jsonData/pageOrderActions/PageOrderSearchTest.json", this.getClass());
             String closeDropLocator = data.get("closeDropByIndex").get("locator");
 
             if (closeDropLocator == null) {
-                throw new NullPointerException("Close drop locator not found in JSON.");
+                throw new NullPointerException("Locator for 'closeDropByIndex' not found in JSON.");
             }
-
             SelenideElement closeButton = $$(closeDropLocator).first();
             closeButton.click();
             System.out.println("Close button clicked.");
@@ -244,9 +225,10 @@ public class PageOrderSearchActions {
      */
     public void ordersSearchSettings(Map<String, Boolean> checkboxStatesStatusData) {
         try {
-            Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
-            Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
-                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json"))), type);
+            JsonLoader jsonLoader = new JsonLoader();
+            Map<String, Map<String, Map<String, Integer>>> data =
+                    jsonLoader.loadNestedJsonData("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json", this.getClass());
+
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataOrders");
 
             clickDropdownByIndex(0, true);
@@ -291,9 +273,10 @@ public class PageOrderSearchActions {
      */
     public void suppliersSearchSettings(Map<String, Boolean> checkboxStatesSupData) {
         try {
-            Type type = new TypeToken<Map<String, Map<String, Map<String, Integer>>>>() {}.getType();
-            Map<String, Map<String, Map<String, Integer>>> data = gson.fromJson(new InputStreamReader(
-                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json"))), type);
+            JsonLoader jsonLoader = new JsonLoader();
+            Map<String, Map<String, Map<String, Integer>>> data =
+                    jsonLoader.loadNestedJsonData("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json", this.getClass());
+
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataSuppliers");
 
             clickDropdownByIndex(1, true);
@@ -332,14 +315,8 @@ public class PageOrderSearchActions {
 
     public void applyConfig() {
         try {
-            Type type = new TypeToken<Map<String, Map<String, String>>>() {}.getType();
-            Gson gson = new Gson();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jsonData/pageOrderActions/PageOrderSearchTest.json");
-            if (inputStream == null) {
-                throw new FileNotFoundException("JSON file not found.");
-            }
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            Map<String, Map<String, String>> data = gson.fromJson(reader, type);
+            JsonLoader jsonLoader = new JsonLoader();
+            Map<String, Map<String, String>> data = jsonLoader.loadJsonData("jsonData/pageOrderActions/PageOrderSearchTest.json", this.getClass());
 
             String applyButtonLocator = data.get("applyConfig").get("locator");
 
