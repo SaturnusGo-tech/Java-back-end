@@ -223,7 +223,7 @@ public class TestPairwiseFilterAlgorithm {
      * <p>
      * Definition of Done (DOD):
      *   1. Catalog items are present more than or equal to 12.
-     *   2. Breadcrumb text is verified as 'Catalog'.
+     *   2. Breadcrumb text is verified as 'Catalog'
      */
     @Test
     @Tag("MaterialFilters")
