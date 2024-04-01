@@ -216,7 +216,6 @@ public class TestPairwiseFilterAlgorithm {
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.CountryOfOriginMoreLessData, filters.CountryOfOriginData);
         actionsCatalog.waitForCatalogPage();
     }
-
     /**
      * Test verifies the functionality of material filters within the catalog.
      * Ensures that applying material filters correctly influences the displayed catalog items.

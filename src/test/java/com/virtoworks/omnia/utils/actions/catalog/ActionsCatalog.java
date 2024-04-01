@@ -1,7 +1,6 @@
 package com.virtoworks.omnia.utils.actions.catalog;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -104,13 +103,13 @@ public class ActionsCatalog {
         Set<String> clickedCheckboxes = new HashSet<>();
 
         for (String locator : checkboxLocators) {
-            SelenideElement checkbox = $x(locator).shouldBe(visible).shouldBe(enabled);
+            SelenideElement checkbox = $x(locator).shouldBe(visible, Duration.ofSeconds(10)).shouldBe(enabled, Duration.ofSeconds(10));
 
             if (!clickedCheckboxes.contains(locator) && !checkbox.isSelected()) {
                 clickWithJS(checkbox);
                 clickedCheckboxes.add(locator);
 
-                checkbox.shouldBe(Condition.checked);
+                checkbox.shouldBe(Condition.checked, Duration.ofSeconds(10));
                 System.out.println("Clicked on checkbox: " + locator);
             } else {
                 System.out.println("Checkbox " + locator + " is already clicked or selected.");
@@ -118,11 +117,9 @@ public class ActionsCatalog {
 
             if ($x(locator).equals(moreLessButton)) {
                 moreLessButton.scrollIntoView("{block: \"center\"}").click();
-                moreLessButton.should(disappear);
+                moreLessButton.should(disappear, Duration.ofSeconds(10));
                 System.out.println("Clicked on 'More/Less' button.");
             }
-
-            Selenide.sleep(500);
         }
     }
 

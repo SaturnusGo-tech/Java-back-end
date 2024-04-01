@@ -100,8 +100,8 @@ public class PageOrderSearchTest {
         Map<String, Boolean> settings = new HashMap<>();
         settings.put("Global Industrial", true);
         settings.put("ODP Business Solutions, LLC (formerly Office Depot)", true);
-        settings.put("Pocket Nurse", false);
-        settings.put("Quill Corporation", false);
+        settings.put("Pocket Nurse", true);
+        settings.put("Quill Corporation", true);
         return settings;
     }
 

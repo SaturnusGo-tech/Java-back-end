@@ -40,7 +40,7 @@ public class Filters {
     public SelenideElement CountryOfOriginMoreLessData;
 
     {
-        CountryOfOriginMoreLessData = $("button[data-element-instance='filter: Country of Origin']");
+        CountryOfOriginMoreLessData = $("button[data-element-instance='filter-button: Country of Origin']");
     }
 
     public SelenideElement MaterialMoreLessData;
@@ -101,7 +101,7 @@ public class Filters {
     public SelenideElement MeasureData;
 
     {
-        MeasureData = $(byXpath("//div[@data-element-instance='filter: Measure']"));
+        MeasureData = $(byXpath("//div[@data-element-instance='filter: Unit of Measure']"));
     }
 
     public SelenideElement  CountryOfOriginData;
@@ -164,7 +164,7 @@ public class Filters {
      */
     public Filters() {
         Supplier = new LinkedHashMap<>();
-        for (int i = 1; i <= 13; i++) {
+        for (int i = 1; i <= 12; i++) {
             Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
         Catalog = new LinkedHashMap<>();
@@ -183,28 +183,28 @@ public class Filters {
         for (int i = 1; i == 3; i++) {
             Measure.put("Measure " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div/div/div/div/label[%d]/input", i));
         }
-        CountryOfOrigin = new LinkedHashMap<>();
-        for (int i = 1; i <= 11; i++) {
+        CountryOfOrigin = new LinkedHashMap<>(); //141
+        for (int i = 1; i <= 1; i++) {
             CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Material = new LinkedHashMap<>();
-        for (int i = 1; i <= 250; i++) {
+        Material = new LinkedHashMap<>(); //250
+        for (int i = 1; i <= 1; i++) {
             Material.put("Material " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Height = new LinkedHashMap<>();
-        for (int i = 1; i <= 250; i++) {
+        Height = new LinkedHashMap<>(); //250
+        for (int i = 1; i <= 1; i++) {
             Height.put("Height " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Length = new LinkedHashMap<>();
-        for (int i = 1; i <= 250; i++) {
+        Length = new LinkedHashMap<>(); //250
+        for (int i = 1; i <= 1; i++) {
             Length.put("Length " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Width = new LinkedHashMap<>();
-        for (int i = 1; i <= 250; i++) {
+        Width = new LinkedHashMap<>(); //250
+        for (int i = 1; i <= 1; i++) {
             Width.put("Width " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[11]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Depth = new LinkedHashMap<>();
-        for (int i = 1; i <= 250; i++) {
+        Depth = new LinkedHashMap<>(); //250
+        for (int i = 1; i <= 1; i++) {
             Depth.put("Depth " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[12]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
     }
