@@ -103,37 +103,50 @@ public class ActionsCatalog {
         Set<String> clickedCheckboxes = new HashSet<>();
 
         for (String locator : checkboxLocators) {
-            SelenideElement checkbox = $x(locator).shouldBe(visible, Duration.ofSeconds(10)).shouldBe(enabled, Duration.ofSeconds(10));
-
+            SelenideElement checkbox = retryFindElement(locator, 500, 300000); // Повторный поиск с задержкой 500 мс, максимум 10 попыток
             if (!clickedCheckboxes.contains(locator) && !checkbox.isSelected()) {
                 clickWithJS(checkbox);
-                clickedCheckboxes.add(locator);
-
                 checkbox.shouldBe(Condition.checked, Duration.ofSeconds(10));
                 System.out.println("Clicked on checkbox: " + locator);
+                clickedCheckboxes.add(locator);
             } else {
                 System.out.println("Checkbox " + locator + " is already clicked or selected.");
-            }
-
-            if ($x(locator).equals(moreLessButton)) {
-                moreLessButton.scrollIntoView("{block: \"center\"}").click();
-                moreLessButton.should(disappear, Duration.ofSeconds(10));
-                System.out.println("Clicked on 'More/Less' button.");
             }
         }
     }
 
+    private SelenideElement retryFindElement(String locator, long delay, long timeout) {
+        long startTime = System.currentTimeMillis(); // Начальное время для отслеживания тайм-аута
+        while (true) { // Бесконечный цикл
+            try {
+                return $x(locator).shouldBe(visible, Duration.ofSeconds(10)).shouldBe(enabled, Duration.ofSeconds(10)); // Элемент найден
+            } catch (NoSuchElementException e) {
+                if (System.currentTimeMillis() - startTime > timeout) {
+                    throw new AssertionError("Элемент не найден за отведенное время: " + timeout + " мс."); // Прерывание по тайм-ауту
+                }
+                try {
+                    Thread.sleep(delay); // Задержка перед следующей попыткой
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt(); // Восстановление прерванного статуса
+                    throw new AssertionError("Прервано во время ожидания элемента.", ie);
+                }
+            }
+        }
+    }
+
+
+
     /**
-     * Sends a GraphQL query to a server and returns the response as a string.
-     *
-     * This method constructs a GraphQL request using a given query string,
-     * sends the request to a GraphQL server, and handles the response.
-     * It serializes the query into JSON format, sends it over HTTP POST,
-     * and extracts the response body as a string.
-     *
-     * @param queryString The GraphQL query string to be sent.
-     * @return The server's response as a String.
-     */
+         * Sends a GraphQL query to a server and returns the response as a string.
+         *
+         * This method constructs a GraphQL request using a given query string,
+         * sends the request to a GraphQL server, and handles the response.
+         * It serializes the query into JSON format, sends it over HTTP POST,
+         * and extracts the response body as a string.
+         *
+         * @param queryString The GraphQL query string to be sent.
+         * @return The server's response as a String.
+         */
     public String sendGraphQLRequest(String queryString) {
         // Create a Gson instance for JSON serialization.
         Gson gson = new GsonBuilder().create();

@@ -2,6 +2,7 @@ package com.virtoworks.omnia.utils.locators.filters;
 
 import com.codeborne.selenide.SelenideElement;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -134,11 +135,7 @@ public class Filters {
         WidthData = $(byXpath("//div[@data-element-instance='filter: Width']"));
     }
 
-    public SelenideElement DepthData;
-
-    {
-        DepthData = $(byXpath("//div[@data-element-instance='filter: Depth']"));
-    }
+    public SelenideElement DepthData = $(byXpath("//div[@data-element-instance='filter: Depth']"));
 
     /**
      * HashMap
@@ -203,7 +200,7 @@ public class Filters {
         for (int i = 1; i <= 1; i++) {
             Width.put("Width " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[11]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Depth = new LinkedHashMap<>(); //250
+        Depth = new HashMap<>(); //250
         for (int i = 1; i <= 1; i++) {
             Depth.put("Depth " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[12]/div[1]/div/div/div[2]/label[%d]/input", i));
         }

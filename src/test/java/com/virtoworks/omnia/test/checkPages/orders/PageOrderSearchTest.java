@@ -98,10 +98,20 @@ public class PageOrderSearchTest {
     }
     private static Map<String, Boolean> getStringBooleanMapSupData() {
         Map<String, Boolean> settings = new HashMap<>();
+        settings.put("_Test Mock Supplier", true);
+        settings.put("_Test Supplier (DBA)", true);
+        settings.put("CDW-G", true);
         settings.put("Global Industrial", true);
+        settings.put("Grainger", true);
+        settings.put("Lawson Products", true);
+        settings.put("MSC", true);
         settings.put("ODP Business Solutions, LLC (formerly Office Depot)", true);
+        settings.put("OPUS Test Supplier One", true);
+        settings.put("OPUS Test Supplier Two", true);
         settings.put("Pocket Nurse", true);
         settings.put("Quill Corporation", true);
+        settings.put("Safeware", true);
+        settings.put("Virto Test 1", true);
         return settings;
     }
 

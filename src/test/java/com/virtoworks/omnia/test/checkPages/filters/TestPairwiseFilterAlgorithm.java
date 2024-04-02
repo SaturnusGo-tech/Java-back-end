@@ -366,8 +366,8 @@ public class TestPairwiseFilterAlgorithm {
     public void verifyDepthData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 
-        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(12, config.getEnvDuration());
-        assertThat(itemsCount).as("The number of catalog items should be at least 12").isGreaterThanOrEqualTo(12);
+        int itemsCount = actionsCatalog.verifyCatalogItemsPresent(17, config.getEnvDuration());
+        assertThat(itemsCount).as("The number of catalog filters items should be at least 17").isGreaterThanOrEqualTo(34);
 
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
@@ -376,14 +376,13 @@ public class TestPairwiseFilterAlgorithm {
         filters.DepthData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        scrollToElementWithCorrection(filters.DepthMoreLessData);
         filters.DepthMoreLessData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        actionsCatalog.waitForCatalogPage();
         List<String> checkboxLocators = new ArrayList<>(filters.Depth.values());
 
         actionsCatalog.clickCheckboxesAndCheckUpdates(filters, checkboxLocators, filters.DepthMoreLessData, filters.DepthData);
+
         actionsCatalog.waitForCatalogPage();
     }
 

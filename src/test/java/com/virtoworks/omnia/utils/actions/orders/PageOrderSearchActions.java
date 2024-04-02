@@ -22,8 +22,7 @@ import java.util.concurrent.TimeUnit;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.*;
 
 public class PageOrderSearchActions {
 
@@ -271,24 +270,29 @@ public class PageOrderSearchActions {
      * identified by a name and associated with a boolean value.
      * Utilizes selector to target checkboxes by their order in a list.
      */
+
+    public void scrollToElement(SelenideElement element) {
+        executeJavaScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'nearest'});", element);
+    }
     public void suppliersSearchSettings(Map<String, Boolean> checkboxStatesSupData) {
         try {
             JsonLoader jsonLoader = new JsonLoader();
             Map<String, Map<String, Map<String, Integer>>> data =
-                    jsonLoader.loadNestedJsonData("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json", this.getClass());
+                    jsonLoader.loadNestedJsonData("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json", getClass());
 
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataSuppliers");
 
             clickDropdownByIndex(1, true);
 
-            ElementsCollection checkboxes = $$("input[type='checkbox']"); // <-- This locator may affect bad to use to it from json list Due to the index of checkboxes that are read from this file and passed into the method mapping.
+            ElementsCollection checkboxes = $$("input[type='checkbox']");
+
             checkboxesData.forEach((name, details) -> {
                 Integer index = details.get("index") - 1;
                 if (index >= 9) {
                     Boolean shouldBeChecked = checkboxStatesSupData.get(name);
                     if (shouldBeChecked != null) {
                         SelenideElement checkbox = checkboxes.get(index).shouldBe(visible, Duration.ofSeconds(15));
-                        checkbox.scrollTo();
+                        scrollToElement(checkbox);
 
                         boolean isSelected = checkbox.isSelected();
 
@@ -311,8 +315,6 @@ public class PageOrderSearchActions {
             System.err.println("An exception occurred during the supplier checkbox state configuration: " + e.getMessage());
         }
     }
-
-
     public void applyConfig() {
         try {
             JsonLoader jsonLoader = new JsonLoader();

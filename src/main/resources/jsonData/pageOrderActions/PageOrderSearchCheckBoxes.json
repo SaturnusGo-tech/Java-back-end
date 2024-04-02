@@ -11,9 +11,19 @@
     "Rejected": {"index": 9}
   },
   "dataSuppliers": {
-    "Global Industrial": {"index": 10},
-    "ODP Business Solutions, LLC (formerly Office Depot)": {"index": 11},
-    "Pocket Nurse": {"index": 12},
-    "Quill Corporation": {"index": 13}
+    "_Test Mock Supplier": {"index": 10},
+    "_Test Supplier (DBA)": {"index": 11},
+    "CDW-G": {"index": 12},
+    "Global Industrial": {"index": 13},
+    "Grainger": {"index": 14},
+    "Lawson Products": {"index": 15},
+    "MSC": {"index": 16},
+    "ODP Business Solutions, LLC (formerly Office Depot)": {"index": 17},
+    "OPUS Test Supplier One": {"index": 18},
+    "OPUS Test Supplier Two": {"index": 19},
+    "Pocket Nurse": {"index": 20},
+    "Quill Corporation": {"index": 21},
+    "Safeware": {"index": 22},
+    "Virto Test 1": {"index": 23}
   }
 }
