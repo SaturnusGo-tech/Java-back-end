@@ -1,0 +1,30 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      goals: 'clean test'
+      options: '-DargLine="-Dallure.results.directory=$(Build.ArtifactStagingDirectory)/allure-results"'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      codeCoverageTool: 'None'
+
+  - script: |
+      wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.13.9/allure-commandline-2.13.9.tgz
+      tar -zxvf allure-commandline-2.13.9.tgz -C $(Build.ArtifactStagingDirectory)
+    displayName: 'Download and Unpack Allure Commandline'
+
+  - script: |
+      $(Build.ArtifactStagingDirectory)/allure-2.13.9/bin/allure generate $(Build.ArtifactStagingDirectory)/allure-results --clean -o $(Build.ArtifactStagingDirectory)/allure-report
+    displayName: 'Generate Allure Report'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/allure-report'
+      ArtifactName: 'Allure Report'
+      publishLocation: 'Container'

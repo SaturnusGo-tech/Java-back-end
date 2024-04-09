@@ -2,7 +2,6 @@ package com.virtoworks.omnia.utils.locators.filters;
 
 import com.codeborne.selenide.SelenideElement;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -161,8 +160,8 @@ public class Filters {
      */
     public Filters() {
         Supplier = new LinkedHashMap<>();
-        for (int i = 1; i <= 12; i++) {
-            Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[1]/div/div/div[2]/label[%d]/input", i));
+        for (int i = 1; i <= 10; i++) {
+            Supplier.put("Supplier " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[1]/div[1]/div/div/div/label[%d]/input", i));
         }
         Catalog = new LinkedHashMap<>();
         for (int i = 1; i <= 17; i++) {
@@ -177,32 +176,32 @@ public class Filters {
             Color.put("Color " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[4]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
         Measure = new LinkedHashMap<>();
-        for (int i = 1; i == 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             Measure.put("Measure " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div/div/div/div/label[%d]/input", i));
         }
         CountryOfOrigin = new LinkedHashMap<>(); //141
-        for (int i = 1; i <= 1; i++) {
-            CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[1]/div/div/div[2]/label[%d]/input", i));
+        for (int i = 1; i <= 30; i++) {
+            CountryOfOrigin.put("CountryOfOrigin " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[5]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
         Material = new LinkedHashMap<>(); //250
-        for (int i = 1; i <= 1; i++) {
-            Material.put("Material " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[8]/div[1]/div/div/div[2]/label[%d]/input", i));
+        for (int i = 1; i <= 250; i++) {
+            Material.put("Material " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[6]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
         Height = new LinkedHashMap<>(); //250
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= 250; i++) {
             Height.put("Height " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[9]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
         Length = new LinkedHashMap<>(); //250
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= 250; i++) {
             Length.put("Length " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
         Width = new LinkedHashMap<>(); //250
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= 250; i++) {
             Width.put("Width " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[11]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
-        Depth = new HashMap<>(); //250
-        for (int i = 1; i <= 1; i++) {
-            Depth.put("Depth " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[12]/div[1]/div/div/div[2]/label[%d]/input", i));
+        Depth = new LinkedHashMap<>(); //250
+        for (int i = 1; i <= 250; i++) {
+            Depth.put("Depth " + i, String.format("//*[@id=\"app\"]/div/div[4]/div/div/div/div[1]/div/div/div[10]/div[1]/div/div/div[2]/label[%d]/input", i));
         }
     }
 

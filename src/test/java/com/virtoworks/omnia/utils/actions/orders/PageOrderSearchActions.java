@@ -87,24 +87,34 @@ public class PageOrderSearchActions {
             String keyword = getRandomOrderKeyword();
             System.out.println("Attempting to search with keyword: " + keyword);
 
-            SelenideElement searchInput = $(Selectors.byAttribute("placeholder", "Enter keyword..."))
-                    .shouldBe(visible, Duration.ofSeconds(15))
-                    .shouldBe(enabled, Duration.ofSeconds(15));
+            try {
+                SelenideElement searchInput = $(Selectors.byAttribute("placeholder", "Enter keyword..."))
+                        .shouldBe(visible, Duration.ofSeconds(15))
+                        .shouldBe(enabled, Duration.ofSeconds(15));
 
-            searchInput.setValue(keyword);
-            System.out.println("Search keyword set to: " + keyword);
+                searchInput.setValue(keyword);
+                System.out.println("Search keyword set to: " + keyword);
 
-            orders.IndexButton.shouldBe(visible, Duration.ofSeconds(15))
-                    .shouldBe(enabled, Duration.ofSeconds(15))
-                    .click();
-            System.out.println("Search button clicked.");
+                try {
+                    orders.IndexButton.shouldBe(visible, Duration.ofSeconds(15))
+                            .shouldBe(enabled, Duration.ofSeconds(15))
+                            .click();
+                    System.out.println("Search button clicked.");
+                } catch (Exception e) {
+                    System.err.println("Failed to interact with the IndexButton. Locator: " + orders.IndexButton.toString());
+                    throw e;
+                }
 
-            if (noResultsFound()) {
-                System.out.println("No results found with keyword: " + keyword + ". Trying another keyword.");
-                $(byText("Reset search")).click();
-            } else {
-                System.out.println("Results found for keyword: " + keyword);
-                break;
+                if (noResultsFound()) {
+                    System.out.println("No results found with keyword: " + keyword + ". Trying another keyword.");
+                    $(byText("Reset search")).click();
+                } else {
+                    System.out.println("Results found for keyword: " + keyword);
+                    break;
+                }
+            } catch (Exception e) {
+                System.err.println("Error during search operation with keyword: " + keyword);
+                throw e;
             }
         } while (true);
     }
@@ -132,25 +142,34 @@ public class PageOrderSearchActions {
                 throw new NullPointerException("Locator keys not found in JSON.");
             }
 
-            SelenideElement filterButton = $(By.xpath(filterButtonLocator))
-                    .shouldBe(visible, Duration.ofSeconds(15))
-                    .shouldBe(enabled, Duration.ofSeconds(15));
-            filterButton.click();
-            System.out.println("Filter button clicked.");
+            try {
+                SelenideElement filterButton = $(By.xpath(filterButtonLocator))
+                        .shouldBe(visible, Duration.ofSeconds(15))
+                        .shouldBe(enabled, Duration.ofSeconds(15));
+                filterButton.click();
+                System.out.println("Filter button clicked.");
+            } catch (Exception e) {
+                System.err.println("Failed to interact with the filter button. Locator: " + filterButtonLocator);
+                throw e;
+            }
 
-            SelenideElement filterBlock = $(By.xpath(filterBlockLocator))
-                    .shouldBe(visible, Duration.ofSeconds(15));
+            try {
+                SelenideElement filterBlock = $(By.xpath(filterBlockLocator))
+                        .shouldBe(visible, Duration.ofSeconds(15));
 
-            if (filterBlock.exists()) {
-                System.out.println("Filter block is now visible.");
-            } else {
-                System.err.println("Filter block did not become visible as expected.");
+                if (filterBlock.exists()) {
+                    System.out.println("Filter block is now visible.");
+                } else {
+                    System.err.println("Filter block did not become visible as expected.");
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to interact with the filter block. Locator: " + filterBlockLocator);
+                throw e;
             }
         } catch (FileNotFoundException | ClassCastException | NullPointerException e) {
             e.printStackTrace();
         }
     }
-
     /**
      * Configures dropdown selections based on predefined boolean settings.
      * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
@@ -167,24 +186,40 @@ public class PageOrderSearchActions {
             JsonLoader jsonLoader = new JsonLoader();
             Map<String, Map<String, String>> data =
                     jsonLoader.loadJsonData("jsonData/pageOrderActions/PageOrderSearchTest.json", this.getClass());
-            String clickDropdownByIndex = data.get("clickDropdownByIndex").get("locator");
+            String clickDropdownByIndexLocator = data.get("clickDropdownByIndex").get("locator");
 
-            if (clickDropdownByIndex == null) {
-                throw new NullPointerException("Locator for 'closeDropByIndex' not found in JSON.");
+            if (clickDropdownByIndexLocator == null) {
+                throw new NullPointerException("Locator for 'clickDropdownByIndex' not found in JSON.");
             }
 
-            ElementsCollection dropdowns = $$(clickDropdownByIndex);
-            SelenideElement dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
-            dropdown.click();
-
-            System.out.println("Dropdown at index " + index + " clicked.");
-            if (withDelay) {
-                TimeUnit.SECONDS.sleep(7);
-                dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
+            try {
+                ElementsCollection dropdowns = $$(clickDropdownByIndexLocator);
+                SelenideElement dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
                 dropdown.click();
-                System.out.println("Dropdown at index " + index + " clicked again after 7 seconds.");
+                System.out.println("Dropdown at index " + index + " clicked.");
+
+                if (withDelay) {
+                    TimeUnit.SECONDS.sleep(7);
+                    dropdown = dropdowns.get(index).shouldBe(visible, Duration.ofSeconds(15));
+                    dropdown.click();
+                    System.out.println("Dropdown at index " + index + " clicked again after delay.");
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to interact with dropdown at index " + index + ". Locator: " + clickDropdownByIndexLocator);
+                throw e;
             }
+        } catch (FileNotFoundException e) {
+            System.err.println("JSON data file not found.");
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Necessary locator not found in JSON data.");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Thread interrupted during delay.");
+            e.printStackTrace();
         } catch (Exception e) {
+            System.err.println("An unexpected error occurred.");
             e.printStackTrace();
         }
     }
@@ -202,20 +237,39 @@ public class PageOrderSearchActions {
             if (closeDropLocator == null) {
                 throw new NullPointerException("Locator for 'closeDropByIndex' not found in JSON.");
             }
-            SelenideElement closeButton = $$(closeDropLocator).first();
-            closeButton.click();
-            System.out.println("Close button clicked.");
 
-            if (closeButton.is(visible) && closeButton.is(enabled)) {
-                System.out.println("The close button is still visible and enabled, indicating it might not have triggered its intended action.");
-            } else {
-                System.out.println("The close button's state changed after clicking, indicating the click may have triggered its intended action.");
+            SelenideElement closeButton;
+            try {
+                closeButton = $$(closeDropLocator).first();
+                closeButton.click();
+                System.out.println("Close button clicked.");
+            } catch (Exception e) {
+                System.err.println("Failed to interact with the close button. Locator: " + closeDropLocator);
+                throw e;
             }
-        } catch (FileNotFoundException | NullPointerException e) {
+
+            try {
+                if (closeButton.is(visible) && closeButton.is(enabled)) {
+                    System.out.println("The close button is still visible and enabled, indicating it might not have triggered its intended action.");
+                } else {
+                    System.out.println("The close button's state changed after clicking, indicating the click may have triggered its intended action.");
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to verify the state of the close button after clicking. Locator: " + closeDropLocator);
+                throw e;
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("JSON data file not found.");
             e.printStackTrace();
-            System.err.println("An exception occurred: " + e.getMessage());
+        } catch (NullPointerException e) {
+            System.err.println("Necessary locator not found in JSON data.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
     /**
      * Configures checkboxes according to a map of settings.
      * Each entry in the map represents a checkbox's desired state (checked or unchecked)
@@ -229,40 +283,52 @@ public class PageOrderSearchActions {
                     jsonLoader.loadNestedJsonData("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json", this.getClass());
 
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataOrders");
+            if (checkboxesData == null) {
+                throw new NullPointerException("Data for 'dataOrders' not found in JSON.");
+            }
 
             clickDropdownByIndex(0, true);
 
-            ElementsCollection checkboxes = $$("input[type='checkbox']"); // <-- This locator may affect bad to use to it from json list Due to the index of checkboxes that are read from this file and passed into the method mapping.
+            ElementsCollection checkboxes = $$("input[type='checkbox']");
             checkboxesData.forEach((name, details) -> {
-                Integer index = details.get("index") - 1;
-                Boolean shouldBeChecked = checkboxStatesStatusData.get(name);
+                try {
+                    Integer index = details.get("index") - 1;
+                    Boolean shouldBeChecked = checkboxStatesStatusData.get(name);
+                    if (shouldBeChecked == null) {
+                        System.err.println("State for checkbox '" + name + "' not specified in test settings.");
+                        return;
+                    }
 
-                if (shouldBeChecked != null) {
                     SelenideElement checkbox = checkboxes.get(index);
                     boolean isSelected = checkbox.isSelected();
 
                     if (shouldBeChecked && !isSelected) {
                         checkbox.click();
-
                         System.out.println("Checkbox '" + name + "' was clicked to change to desired state: true");
-
                     } else if (!shouldBeChecked && isSelected) {
                         System.err.println("Checkbox '" + name + "' is in an incorrect state and should be unchecked, but no action was taken.");
-
                     } else {
                         System.out.println("Checkbox '" + name + "' is already in the desired state: " + shouldBeChecked);
                     }
-
-                } else {
-                    System.err.println("State for checkbox '" + name + "' not specified in test settings.");
+                } catch (Exception e) {
+                    System.err.println("An error occurred while processing checkbox '" + name + "': " + e.getMessage());
+                    e.printStackTrace();
                 }
             });
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            System.err.println("JSON data file not found.");
             e.printStackTrace();
-            System.err.println("An exception occurred during the checkbox state configuration: " + e.getMessage());
+        } catch (NullPointerException e) {
+            System.err.println("Necessary data not found in JSON data.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during the checkbox state configuration: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeDropByIndex();
         }
-        closeDropByIndex();
     }
+
 
     /**
      * Configures checkboxes according to a map of settings.
@@ -272,8 +338,14 @@ public class PageOrderSearchActions {
      */
 
     public void scrollToElement(SelenideElement element) {
-        executeJavaScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'nearest'});", element);
+        try {
+            executeJavaScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'nearest'});", element);
+        } catch (Exception e) {
+            System.err.println("Failed to scroll to element: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
     public void suppliersSearchSettings(Map<String, Boolean> checkboxStatesSupData) {
         try {
             JsonLoader jsonLoader = new JsonLoader();
@@ -281,38 +353,49 @@ public class PageOrderSearchActions {
                     jsonLoader.loadNestedJsonData("jsonData/pageOrderActions/PageOrderSearchCheckBoxes.json", getClass());
 
             Map<String, Map<String, Integer>> checkboxesData = data.get("dataSuppliers");
+            if (checkboxesData == null) {
+                throw new NullPointerException("Data for 'dataSuppliers' not found in JSON.");
+            }
 
             clickDropdownByIndex(1, true);
 
             ElementsCollection checkboxes = $$("input[type='checkbox']");
 
             checkboxesData.forEach((name, details) -> {
-                Integer index = details.get("index") - 1;
-                if (index >= 9) {
-                    Boolean shouldBeChecked = checkboxStatesSupData.get(name);
-                    if (shouldBeChecked != null) {
+                try {
+                    Integer index = details.get("index") - 1;
+                    if (index >= 9) {
+                        Boolean shouldBeChecked = checkboxStatesSupData.get(name);
+                        if (shouldBeChecked == null) {
+                            System.err.println("State for supplier checkbox '" + name + "' not specified in test settings.");
+                            return;
+                        }
+
                         SelenideElement checkbox = checkboxes.get(index).shouldBe(visible, Duration.ofSeconds(15));
                         scrollToElement(checkbox);
-
                         boolean isSelected = checkbox.isSelected();
 
-                        if (shouldBeChecked && !isSelected) {
+                        if ((shouldBeChecked && !isSelected) || (!shouldBeChecked && isSelected)) {
                             checkbox.click();
-                            System.out.println("Supplier checkbox '" + name + "' was clicked to change to desired state: true.");
-                        } else if (!shouldBeChecked && isSelected) {
-                            checkbox.click();
-                            System.out.println("Supplier checkbox '" + name + "' was clicked to change to desired state: false.");
+                            System.out.println("Supplier checkbox '" + name + "' was clicked to change to desired state: " + shouldBeChecked + ".");
                         } else {
                             System.out.println("Supplier checkbox '" + name + "' is already in the desired state: " + shouldBeChecked + ".");
                         }
-                    } else {
-                        System.err.println("State for supplier checkbox '" + name + "' not specified in test settings.");
                     }
+                } catch (Exception e) {
+                    System.err.println("An error occurred while processing supplier checkbox '" + name + "': " + e.getMessage());
+                    e.printStackTrace();
                 }
             });
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            System.err.println("JSON data file not found.");
             e.printStackTrace();
-            System.err.println("An exception occurred during the supplier checkbox state configuration: " + e.getMessage());
+        } catch (NullPointerException e) {
+            System.err.println("Necessary data not found in JSON data.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred during the supplier checkbox state configuration: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     public void applyConfig() {
@@ -321,26 +404,38 @@ public class PageOrderSearchActions {
             Map<String, Map<String, String>> data = jsonLoader.loadJsonData("jsonData/pageOrderActions/PageOrderSearchTest.json", this.getClass());
 
             String applyButtonLocator = data.get("applyConfig").get("locator");
-
             if (applyButtonLocator == null) {
                 throw new NullPointerException("Apply button locator not found in JSON.");
             }
 
-            SelenideElement filterButton = $(By.xpath(applyButtonLocator))
-                    .shouldBe(visible, Duration.ofSeconds(15))
-                    .shouldBe(enabled, Duration.ofSeconds(15));
-            filterButton.click();
-            System.out.println("Attempted to click the Apply button.");
+            try {
+                SelenideElement filterButton = $(By.xpath(applyButtonLocator))
+                        .shouldBe(visible, Duration.ofSeconds(15))
+                        .shouldBe(enabled, Duration.ofSeconds(15));
+                filterButton.click();
+                System.out.println("Attempted to click the Apply button.");
 
-            if (filterButton.is(visible) && filterButton.is(enabled)) {
-                System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
-            } else {
-                System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+                if (filterButton.is(visible) && filterButton.is(enabled)) {
+                    System.out.println("The Apply button is still visible and enabled, indicating it might not have triggered its intended action.");
+                } else {
+                    System.out.println("The Apply button's state changed after clicking, indicating the click may have triggered its intended action.");
+                }
+            } catch (Exception e) {
+                System.err.println("An error occurred while interacting with the Apply button: " + e.getMessage());
+                e.printStackTrace();
             }
-        } catch (FileNotFoundException | NullPointerException e) {
+        } catch (FileNotFoundException e) {
+            System.err.println("JSON data file not found.");
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Necessary data not found in JSON data.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     /**
      * Pauses the execution for a specified number of milliseconds.
      * This method is used to introduce a delay in test execution, for example, to wait for page elements to load.

@@ -18,7 +18,7 @@ public class ActionsAuth {
     logOutLocators logOutLocators = new logOutLocators();
 
     // Configuration for environmental specific settings such as timeouts.
-    EnvironmentConfig environmentConfig = new EnvironmentConfig("demo");
+    EnvironmentConfig environmentConfig = new EnvironmentConfig("qa");
 
     /**
      * Performs user login using specified credentials.

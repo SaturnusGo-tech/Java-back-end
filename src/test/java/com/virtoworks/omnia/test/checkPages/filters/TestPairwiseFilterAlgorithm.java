@@ -35,6 +35,7 @@ public class TestPairwiseFilterAlgorithm {
         config.setUp("catalog");
     }
 
+
     /**
      * Test verifies the functionality of supplier filters within the supplier section.
      * Ensures that applying filters correctly influences the displayed catalog items.
@@ -55,11 +56,9 @@ public class TestPairwiseFilterAlgorithm {
         String breadcrumbText = actionsCatalog.checkBreadcrumbText("Catalog", config.getEnvDuration());
         assertThat(breadcrumbText).as("Breadcrumb text should match 'Catalog'").isEqualTo("Catalog");
 
-        scrollToElementWithCorrection(filters.FullData);
         filters.FullData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
-        scrollToElementWithCorrection(filters.supplierMoreLessData);
         filters.supplierMoreLessData.shouldBe(visible).click();
         actionsCatalog.waitForCatalogPage();
 
@@ -145,7 +144,7 @@ public class TestPairwiseFilterAlgorithm {
      *   2. Breadcrumb text is verified as 'Manufacturer'.
      */
     @Test
-    @Tag("ColorFilters")
+    @Tag("ManufacturerFilters")
     public void verifyManufacturerData() throws InterruptedException {
         actionsCatalog.waitForCatalogPage();
 

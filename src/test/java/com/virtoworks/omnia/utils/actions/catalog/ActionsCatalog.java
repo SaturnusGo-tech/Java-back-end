@@ -104,6 +104,9 @@ public class ActionsCatalog {
 
         for (String locator : checkboxLocators) {
             SelenideElement checkbox = retryFindElement(locator, 500, 300000); // Повторный поиск с задержкой 500 мс, максимум 10 попыток
+
+            scrollToElementWithCorrection(checkbox, 100); // Скролл к чекбоксу с коррекцией
+
             if (!clickedCheckboxes.contains(locator) && !checkbox.isSelected()) {
                 clickWithJS(checkbox);
                 checkbox.shouldBe(Condition.checked, Duration.ofSeconds(10));
@@ -115,24 +118,44 @@ public class ActionsCatalog {
         }
     }
 
-    private SelenideElement retryFindElement(String locator, long delay, long timeout) {
-        long startTime = System.currentTimeMillis(); // Начальное время для отслеживания тайм-аута
-        while (true) { // Бесконечный цикл
+    /**
+     * Скроллит к элементу на странице с возможной коррекцией позиции.
+     *
+     * @param element Элемент, к которому нужно проскроллить.
+     * @param correction Поправка на сдвиг, чтобы элемент не оказался скрыт под фиксированным хедером.
+     */
+    public void scrollToElementWithCorrection(SelenideElement element, int correction) {
+        executeJavaScript("arguments[0].scrollIntoView(true); window.scrollBy(0, arguments[1]);", element, -correction);
+    }
+
+    /**
+     * Повторный поиск элемента с задержкой и тайм-аутом.
+     *
+     * @param locator Локатор элемента для поиска.
+     * @param delay Задержка между попытками в миллисекундах.
+     * @param timeout Тайм-аут ожидания в миллисекундах.
+     * @return Найденный элемент.
+     * @throws InterruptedException Если поток прерван во время ожидания.
+     */
+    private SelenideElement retryFindElement(String locator, long delay, long timeout) throws InterruptedException {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < timeout) {
             try {
-                return $x(locator).shouldBe(visible, Duration.ofSeconds(10)).shouldBe(enabled, Duration.ofSeconds(10)); // Элемент найден
-            } catch (NoSuchElementException e) {
+                SelenideElement element = $x(locator).shouldBe(visible, Duration.ofSeconds(10)).shouldBe(enabled, Duration.ofSeconds(10));
+                return element;
+            } catch (Exception e) {
                 if (System.currentTimeMillis() - startTime > timeout) {
-                    throw new AssertionError("Элемент не найден за отведенное время: " + timeout + " мс."); // Прерывание по тайм-ауту
+                    // Если время ожидания истекло, выбросить AssertionError
+                    throw new AssertionError("Элемент не найден за отведенное время: " + timeout + " мс. Локатор: " + locator);
                 }
-                try {
-                    Thread.sleep(delay); // Задержка перед следующей попыткой
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt(); // Восстановление прерванного статуса
-                    throw new AssertionError("Прервано во время ожидания элемента.", ie);
-                }
+                // Задержка перед следующей попыткой
+                Thread.sleep(delay);
             }
         }
+        // Этот код достигнут не будет, так как выше идет выброс исключения по таймауту
+        throw new AssertionError("Элемент не найден. Выполнение не должно было дойти до этой точки.");
     }
+
 
 
 
