@@ -6,7 +6,6 @@ import com.codeborne.selenide.SelenideElement;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.virtoworks.omnia.utils.actions.json.JsonLoader;
-import com.virtoworks.omnia.utils.actions.orders.data.OrdersData;
 import com.virtoworks.omnia.utils.locators.Orders.OrdersLocators;
 import org.openqa.selenium.By;
 
@@ -16,13 +15,13 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
+import static com.virtoworks.omnia.utils.actions.orders.data.OrdersData.JSON_DATA;
 
 public class PageOrderSearchActions {
 
@@ -61,15 +60,20 @@ public class PageOrderSearchActions {
      * each product being a map with a key "keyword".
      * @return A random product keyword.
      */
-    private String getRandomOrderKeyword() {
+    private static int currentProductIndex = 0;
+
+    private static String getOrderKeywordSequentially() {
+        Gson gson = new Gson();
         Type typeOfProductList = new TypeToken<Map<String, List<Map<String, String>>>>() {}.getType();
-        Map<String, List<Map<String, String>>> productsData = gson.fromJson(OrdersData.JSON_DATA, typeOfProductList);
+        Map<String, List<Map<String, String>>> productsData = gson.fromJson(JSON_DATA, typeOfProductList);
         List<Map<String, String>> products = productsData.get("products");
 
-        Random random = new Random();
-        int randomIndex = random.nextInt(products.size());
-        return products.get(randomIndex).get("keyword");
+        String keyword = products.get(currentProductIndex).get("keyword");
+        currentProductIndex = (currentProductIndex + 1) % products.size(); // Переход к следующему индексу с цикличностью
+
+        return keyword;
     }
+
     /**
      * Checks if the page shows "No results found".
      * @return true if the text "No results found" is found on the page.
@@ -82,9 +86,9 @@ public class PageOrderSearchActions {
      * Attempts to search for a product using random keywords until results are found.
      * If "No results found" is displayed, tries another random keyword.
      */
-    public void attemptSearchWithRandomKeywords() {
+    public void attemptSearchWithSequentialKeywords() {
         do {
-            String keyword = getRandomOrderKeyword();
+            String keyword = getOrderKeywordSequentially();
             System.out.println("Attempting to search with keyword: " + keyword);
 
             try {
@@ -118,6 +122,7 @@ public class PageOrderSearchActions {
             }
         } while (true);
     }
+
 
     /**
      * Opens the filter panel by clicking on the "Filters" button.

@@ -50,7 +50,7 @@ public class PageOrderSearchTest {
         // Start of the test: Searching with random keywords.
         System.out.println("Test started: Searching with random keywords");
         // Attempt to search for orders using a randomly selected keyword.
-        searchActions.attemptSearchWithRandomKeywords();
+        searchActions.attemptSearchWithSequentialKeywords();
 
         // Opening the filters section to access more search options.
         System.out.println("Filters are opened");
