@@ -96,6 +96,8 @@ public class PageOrderSearchActions {
                         .shouldBe(visible, Duration.ofSeconds(15))
                         .shouldBe(enabled, Duration.ofSeconds(15));
 
+                searchInput.click();
+                searchInput.clear();
                 searchInput.setValue(keyword);
                 System.out.println("Search keyword set to: " + keyword);
 
@@ -122,6 +124,7 @@ public class PageOrderSearchActions {
             }
         } while (true);
     }
+
 
 
     /**

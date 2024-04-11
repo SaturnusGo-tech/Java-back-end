@@ -22,16 +22,16 @@ public class OrdersData {
     public static final String JSON_DATA = """
     {
       "products": [
-        {"id": 1, "keyword": "Global"},
-        {"id": 2, "keyword": "global"},
-        {"id": 3, "keyword": "global"},
-        {"id": 4, "keyword": "global"},
-        {"id": 5, "keyword": "global"},
-        {"id": 6, "keyword": "global"},
-        {"id": 7, "keyword": "global"},
-        {"id": 8, "keyword": "global"},
-        {"id": 9, "keyword": "global"},
-        {"id": 10, "keyword": "global"},
+        {"id": 1, "keyword": "Lawson"},
+        {"id": 2, "keyword": "Lawson"},
+        {"id": 3, "keyword": "Lawson"},
+        {"id": 4, "keyword": "Lawson"},
+        {"id": 5, "keyword": "Lawson"},
+        {"id": 6, "keyword": "Lawson"},
+        {"id": 7, "keyword": "Lawson"},
+        {"id": 8, "keyword": "Lawson"},
+        {"id": 9, "keyword": "Lawson"},
+        {"id": 10, "keyword": "Lawson"},
       ]
     }
     """;

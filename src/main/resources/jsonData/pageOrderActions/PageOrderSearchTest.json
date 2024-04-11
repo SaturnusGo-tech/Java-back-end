@@ -11,5 +11,9 @@
   },
   "applyConfig": {
     "locator": "//button[contains(.,'Apply')]"
+  },
+  "acceptKeywordData": {
+    "applyData": "//*[@id=\"app\"]/div/div[4]/div/div/div/div[2]/div[2]/div[2]/div/div[1]/div[1]/button[2]"
   }
 }
+
