@@ -183,12 +183,6 @@ public class PageOrderSearchActions {
      * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
      * Utilizes a CSS selector to identify the dropdown arrows by their order.
      */
-
-    /**
-     * Configures dropdown selections based on predefined boolean settings.
-     * Iterates through each setting, clicking on the dropdown arrow if the setting is true.
-     * Utilizes a CSS selector to identify the dropdown arrows by their order.
-     */
     public void clickDropdownByIndex(int index, boolean withDelay) {
         try {
             JsonLoader jsonLoader = new JsonLoader();

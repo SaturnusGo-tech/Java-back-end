@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import static com.codeborne.selenide.Selenide.sleep;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -42,10 +43,22 @@ public class TestManageSupplier {
         config.setUp("company/supplier-management");
         actionsCatalog.loadColorData();
     }
+
+    /**
+     * Get input query test enterDataInSupplierInput_Success
+     */
+    @Test
+    @Tag("EnterSupplierData")
+    public void enterDataInSupplierInput_Success() {
+        sleep(4000);
+        actionsCatalog.enterSuppliersDataInput(1);
+    }
+
     /**
      * Test for clicking the "Buy now" button and retrieving the conversion page URL.
      * This test verifies that clicking the "Buy now" button leads to a valid conversion page URL.
      */
+
     @Test
     @Tag("BuyNow")
     public void BuyNowConversion__Url() {

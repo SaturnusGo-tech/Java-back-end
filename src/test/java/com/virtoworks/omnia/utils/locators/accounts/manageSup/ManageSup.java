@@ -26,6 +26,14 @@ public class ManageSup {
             return $(byText("Buy now"));
         }
     }
+    /**
+     * Locates the "Search" input.
+     *
+     * @return The "Search" input element.
+     */
+    public static SelenideElement getSearchInput() {
+        return $("input[placeholder='Search']");
+    }
 
     /**
      * Subclass for locating tax certification-related elements.
@@ -76,8 +84,6 @@ public class ManageSup {
             return $(".vc-file-uploader.vc-file-uploader--view--vertical input[type='file']");
         }
 
-        // Additional methods for other elements...
-
         /**
          * Locates the "Upload tax certs" button.
          *
@@ -86,8 +92,6 @@ public class ManageSup {
         public static SelenideElement getUploadCertsButton() {
             return $(byText("Upload tax certs"));
         }
-
-        // Additional methods for other elements...
 
         /**
          * Locates the "Enter certificate name" input field.
@@ -98,7 +102,6 @@ public class ManageSup {
             return $("input[placeholder='Enter certificate name']");
         }
 
-        // Additional methods for other elements...
 
         /**
          * Locates the "Please select value(s)" input field for suppliers.
@@ -109,7 +112,6 @@ public class ManageSup {
             return $("input[placeholder='Please select value(s)']");
         }
 
-        // Additional methods for other elements...
 
         /**
          * Locates the "Upload" button for updating data.
@@ -119,8 +121,6 @@ public class ManageSup {
         public static SelenideElement getUpdateDataButton() {
             return $(byText("Upload"));
         }
-
-        // Additional methods for other elements...
 
         /**
          * Locates the element for downloading tax certification data.
@@ -145,9 +145,14 @@ public class ManageSup {
     public Map<String, String> Supplier;
     public Map<String, String> States;
 
+    public Map<Integer, String> SupData;
+
+
     /**
      * Constructor to initialize Supplier and States data.
      */
+
+
     public ManageSup() {
         Supplier = new LinkedHashMap<>();
         for (int i = 1; i <= 18; i++) {
@@ -158,5 +163,18 @@ public class ManageSup {
         for (int i = 1; i <= 51; i++) {
             States.put("Catalog " + i, String.format("//*/ul/li[%d]/button/span/label/input", i));
         }
+        /**
+         * Constructor for initialize sup name ID's
+         */
+        SupData = new LinkedHashMap<>();
+        SupData.put(1, "ODP");
+        SupData.put(2, "Global");
+        SupData.put(3, "Quill");
+        SupData.put(4, "Pocket");
+        SupData.put(5, "Grainger");
+        SupData.put(6, "MSC");
+        SupData.put(7, "Lawson");
+
     }
+
 }

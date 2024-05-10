@@ -45,6 +45,28 @@ public class ActionAccountManageSuppliers {
         }
         return colorScheme;
     }
+
+    /**
+     * Actions for getting query data using suppliers keywords
+     */
+    public void enterDataInSupplierInput(Integer supId, String data) {
+        String supName = manageSup.SupData.get(supId);
+        if (supName == null) {
+            throw new IllegalArgumentException("Supplier ID not found: " + supId);
+        }
+
+        SelenideElement supplierInput = $$("input[placeholder='Search']")
+                .filter(Condition.visible)
+                .findBy(Condition.exist);
+
+        if (supplierInput == null) {
+            throw new IllegalStateException("Input field not found for supplier: " + supName);
+        }
+
+        supplierInput.setValue(data);
+    }
+
+
     /**
      * Clicks the "Buy Now" button and returns the URL of the conversion page.
      *
@@ -359,5 +381,15 @@ public class ActionAccountManageSuppliers {
             System.err.println("Failed to click 'Tax documents' or download the certificate. Error: " + e.getMessage());
             throw e;
         }
+    }
+    public void enterSuppliersDataInput(Integer supID){
+
+        String data = manageSup.SupData.get(supID);
+        if (data == null){
+            throw new IllegalArgumentException("Suppliers data is not found for ID" + supID);
+        }
+        ManageSup.getSearchInput()
+                .shouldBe(Condition.visible, Condition.enabled)
+                .setValue(data);
     }
 }
