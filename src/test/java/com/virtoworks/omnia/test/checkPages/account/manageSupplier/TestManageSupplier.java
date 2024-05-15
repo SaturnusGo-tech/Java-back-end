@@ -52,13 +52,23 @@ public class TestManageSupplier {
     public void enterDataInSupplierInput_Success() {
         sleep(4000);
         actionsCatalog.enterSuppliersDataInput(1);
+        actionsCatalog.clickSearchButton();
+        actionsCatalog.clickSearchAndVerifyNetworkChanges();
+        sleep(10000);
     }
 
+    @Test
+    @Tag("EnterSupplierData")
+    public void manage_supplier_pagination__check() {
+        sleep(4000);
+        actionsCatalog.clickPaginationPage();
+        sleep(10000);
+
+    }
     /**
      * Test for clicking the "Buy now" button and retrieving the conversion page URL.
      * This test verifies that clicking the "Buy now" button leads to a valid conversion page URL.
      */
-
     @Test
     @Tag("BuyNow")
     public void BuyNowConversion__Url() {
@@ -241,3 +251,4 @@ public class TestManageSupplier {
         }
     }
 }
+

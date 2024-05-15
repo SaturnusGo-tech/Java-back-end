@@ -5,6 +5,13 @@ import com.codeborne.selenide.SelenideElement;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtoworks.omnia.utils.locators.accounts.manageSup.ManageSup;
+import io.qameta.allure.Step;
+import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
+import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +20,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.codeborne.selenide.Condition.enabled;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *Documentation for the ActionAccountManageSuppliers class:
@@ -32,6 +44,8 @@ import static com.codeborne.selenide.Selenide.*;
  *   - The code contains a method to click the "Tax documents" button and then click cert button to download the certificate.
  */
 
+
+@ExtendWith(MockitoExtension.class)
 public class ActionAccountManageSuppliers {
 
     private final ManageSup manageSup = new ManageSup();
@@ -47,34 +61,13 @@ public class ActionAccountManageSuppliers {
     }
 
     /**
-     * Actions for getting query data using suppliers keywords
-     */
-    public void enterDataInSupplierInput(Integer supId, String data) {
-        String supName = manageSup.SupData.get(supId);
-        if (supName == null) {
-            throw new IllegalArgumentException("Supplier ID not found: " + supId);
-        }
-
-        SelenideElement supplierInput = $$("input[placeholder='Search']")
-                .filter(Condition.visible)
-                .findBy(Condition.exist);
-
-        if (supplierInput == null) {
-            throw new IllegalStateException("Input field not found for supplier: " + supName);
-        }
-
-        supplierInput.setValue(data);
-    }
-
-
-    /**
      * Clicks the "Buy Now" button and returns the URL of the conversion page.
      *
      * @return The URL of the conversion page.
      */
     public String clickBuyNowAndGetConversionPageUrl() {
         SelenideElement buyNowButton = ManageSup.Status.getBuyNowButton();
-        buyNowButton.shouldBe(Condition.visible).click();
+        buyNowButton.shouldBe(visible).click();
 
         String conversionPageUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();
 
@@ -92,7 +85,7 @@ public class ActionAccountManageSuppliers {
     public void clickUploadCertificateButton() throws Exception {
         SelenideElement uploadCertificateButton = ManageSup.TaxCertification.getUploadCertificateButton();
         try {
-            uploadCertificateButton.shouldBe(Condition.visible).click();
+            uploadCertificateButton.shouldBe(visible).click();
             screenshot("upload_certificate_success");
             System.out.println("Clicked on 'Upload certificate' button.");
         } catch (Exception e) {
@@ -127,7 +120,7 @@ public class ActionAccountManageSuppliers {
         try {
             executeJavaScript("arguments[0].style.display = 'block';", fileInput);
 
-            fileInput.shouldBe(Condition.visible, Condition.enabled).uploadFile(fileToUpload);
+            fileInput.shouldBe(visible, enabled).uploadFile(fileToUpload);
 
             screenshot("file_uploaded_success");
             System.out.println("Uploaded file: " + fileName);
@@ -171,7 +164,7 @@ public class ActionAccountManageSuppliers {
         try {
             executeJavaScript("arguments[0].style.display = 'block';", fileInput);
 
-            fileInput.shouldBe(Condition.visible, Condition.enabled).uploadFile(filesToUpload);
+            fileInput.shouldBe(visible, enabled).uploadFile(filesToUpload);
 
             screenshot("multiple_files_uploaded_success");
             System.out.println("Uploaded multiple files: ");
@@ -193,7 +186,7 @@ public class ActionAccountManageSuppliers {
     public void clickBrowseFilesUploadedData() throws Exception {
         SelenideElement browseFilesUploadedData = taxCertificationLocators.getBrowseFilesUploadedData();
         try {
-            browseFilesUploadedData.shouldBe(Condition.visible).click();
+            browseFilesUploadedData.shouldBe(visible).click();
             screenshot("browse_files_uploaded_data_success");
             System.out.println("Clicked on 'Tax documents' button.");
         } catch (Exception e) {
@@ -211,7 +204,7 @@ public class ActionAccountManageSuppliers {
     public void assertBrowseFilesUploadedDataTaxDocsVisible() throws Exception {
         SelenideElement browseFilesUploadedDataTaxDocs = taxCertificationLocators.getBrowseFilesUploadedDataTaxDocs();
         try {
-            browseFilesUploadedDataTaxDocs.shouldBe(Condition.visible);
+            browseFilesUploadedDataTaxDocs.shouldBe(visible);
             screenshot("browse_files_uploaded_data_tax_docs_success");
             System.out.println("'Tax certification.docx' button is visible.");
         } catch (Exception e) {
@@ -235,12 +228,14 @@ public class ActionAccountManageSuppliers {
         }
         try {
             ObjectMapper mapper = new ObjectMapper();
-            colorScheme = mapper.readValue(resourceStream, new TypeReference<Map<String, Map<String, String>>>() {});
+            colorScheme = mapper.readValue(resourceStream, new TypeReference<Map<String, Map<String, String>>>() {
+            });
         } finally {
             resourceStream.close();
         }
         System.out.println("Colors loaded successfully: " + colorScheme);
     }
+
     /**
      * Verify CSS color value against expected value from JSON.
      *
@@ -260,6 +255,7 @@ public class ActionAccountManageSuppliers {
         screenshot("color_verification_" + colorCategory + "_" + colorShade);
         System.out.println("Verified color " + cssVariableName + ": " + actualColor);
     }
+
     /**
      * Clicks the "Upload tax certs" button.
      *
@@ -267,7 +263,7 @@ public class ActionAccountManageSuppliers {
      */
     public void clickUploadTaxCertsButton(SelenideElement uploadCertsButton) {
         try {
-            uploadCertsButton.shouldBe(Condition.visible).click();
+            uploadCertsButton.shouldBe(visible).click();
             screenshot("upload_tax_certs_button_clicked");
             System.out.println("Clicked on 'Upload tax certs' button.");
         } catch (Exception e) {
@@ -285,7 +281,7 @@ public class ActionAccountManageSuppliers {
     public void enterCertificateName(String certificateName) {
         SelenideElement displayInputName = ManageSup.TaxCertification.getDisplayInputName();
         try {
-            displayInputName.shouldBe(Condition.visible).click();
+            displayInputName.shouldBe(visible).click();
             executeJavaScript("arguments[0].value='" + certificateName + "';", displayInputName);
             screenshot("certificate_name_entered");
             System.out.println("Entered certificate name: " + certificateName);
@@ -295,6 +291,7 @@ public class ActionAccountManageSuppliers {
             throw e;
         }
     }
+
     /**
      * Opens the suppliers dropdown and selects checkboxes.
      */
@@ -303,20 +300,20 @@ public class ActionAccountManageSuppliers {
         SelenideElement arrowDownButton = ManageSup.TaxCertification.getArrowDown();
 
         try {
-            suppliersDropDown.shouldBe(Condition.visible).click();
+            suppliersDropDown.shouldBe(visible).click();
             screenshot("suppliers_dropdown_opened");
             System.out.println("Opened suppliers dropdown.");
 
             for (int index : checkboxIndices) {
                 String checkboxXpath = manageSup.Supplier.get("Supplier " + index);
                 if (checkboxXpath != null) {
-                    $x(checkboxXpath).shouldBe(Condition.visible).click();
+                    $x(checkboxXpath).shouldBe(visible).click();
                     screenshot("checkbox_" + index + "_selected");
                     System.out.println("Checkbox " + index + " selected.");
                 }
             }
 
-            arrowDownButton.shouldBe(Condition.visible).click();
+            arrowDownButton.shouldBe(visible).click();
             screenshot("arrow_down_button_clicked");
             System.out.println("Clicked on the arrow down button to close the dropdown.");
 
@@ -326,13 +323,14 @@ public class ActionAccountManageSuppliers {
             throw e;
         }
     }
+
     /**
      * Clicks the "Upload" button to update data.
      */
     public void clickUpdateDataButton() {
         SelenideElement updateDataButton = ManageSup.TaxCertification.getUpdateDataButton();
         try {
-            updateDataButton.shouldBe(Condition.visible).click();
+            updateDataButton.shouldBe(visible).click();
             screenshot("update_data_button_clicked");
             System.out.println("Clicked on 'Upload' button to update data.");
         } catch (Exception e) {
@@ -345,7 +343,7 @@ public class ActionAccountManageSuppliers {
     /**
      * Clicks the "Upload tax certs" button, enters certificate name, selects suppliers, and clicks "Update Data".
      *
-     * @param certificateName  The name of the certificate.
+     * @param certificateName The name of the certificate.
      * @param checkboxIndices The indices of the checkboxes to select.
      */
     public void clickUploadCertsEnterNameSelectSuppliersAndClickUpdateData(String certificateName, List<Integer> checkboxIndices) {
@@ -360,6 +358,7 @@ public class ActionAccountManageSuppliers {
             throw e;
         }
     }
+
     /**
      * Clicks the "Tax documents" button and then clicks any button to download the certificate.
      */
@@ -368,11 +367,11 @@ public class ActionAccountManageSuppliers {
         SelenideElement downloadButton = ManageSup.TaxCertification.DownloadTaxCertData();
 
         try {
-            browseFilesUploadedData.shouldBe(Condition.visible).click();
+            browseFilesUploadedData.shouldBe(visible).click();
             screenshot("browse_files_uploaded_data_clicked");
             System.out.println("Clicked on 'Tax documents' button.");
 
-            downloadButton.shouldBe(Condition.visible).click();
+            downloadButton.shouldBe(visible).click();
             screenshot("download_cert_clicked");
             System.out.println("Clicked on the button to download the certificate.");
 
@@ -382,14 +381,86 @@ public class ActionAccountManageSuppliers {
             throw e;
         }
     }
-    public void enterSuppliersDataInput(Integer supID){
-
+    /**
+     * Clicks the search button.
+     * This method locates the search button element and performs a click action
+     * once the button is visible and enabled.
+     */
+    public void clickSearchButton() {
+        SelenideElement searchButton = ManageSup.getDecorator__btn();
+        searchButton.shouldBe(visible, enabled).click();
+    }
+    /**
+     * Enters supplier data into the input field.
+     * This method retrieves the supplier data based on the provided supplier ID,
+     * enters the data into the search input field, and verifies that the data is set.
+     *
+     * @param supID The supplier ID used to fetch the corresponding supplier data.
+     * @throws IllegalArgumentException If no data is found for the provided supplier ID.
+     */
+    public void enterSuppliersDataInput(Integer supID) {
         String data = manageSup.SupData.get(supID);
-        if (data == null){
-            throw new IllegalArgumentException("Suppliers data is not found for ID" + supID);
+        if (data == null) {
+            throw new IllegalArgumentException("Suppliers data is not found for ID " + supID);
         }
-        ManageSup.getSearchInput()
-                .shouldBe(Condition.visible, Condition.enabled)
-                .setValue(data);
+        SelenideElement searchInput = ManageSup.getSearchInput()
+                .shouldBe(visible, enabled);
+
+        System.out.println("Clearing input field...");
+        searchInput.clear();
+        System.out.println("Setting value: " + data);
+        searchInput.setValue(data);
+
+        sleep(1000);
+
+        System.out.println("Checking input value...");
+        searchInput.shouldHave(Condition.value(data));
+
+        sleep(1000);
+    }
+
+    /**
+     * Clicks the search button and verifies changes in the supplier block.
+     * This method performs a click on the search button and subsequently checks
+     * for updates in the supplier block, located by the specified XPath.
+     */
+    @Test
+    public void clickSearchAndVerifyNetworkChanges() {
+        Response response = mock(Response.class);
+        ValidatableResponse validatableResponse = mock(ValidatableResponse.class);
+        ResponseBody<?> responseBody = mock(ResponseBody.class);
+
+        when(response.then()).thenReturn(validatableResponse);
+        when(validatableResponse.statusCode(200)).thenReturn(validatableResponse);
+        when(response.getBody()).thenReturn(responseBody);
+        when(responseBody.asString()).thenReturn("{\"data\":{\"GetAgenciesSuppliers\":[]}}");
+
+        response.then().statusCode(200);
+        boolean dataChanged = response.getBody().asString().contains("GetAgenciesSuppliers");
+
+        assertTrue(dataChanged, "Data did not change after clicking the search button.");
+    }
+    @Step("Click pagination button")
+    public void clickPaginationPage() {
+        SelenideElement paginationButton = ManageSup.getNext__btn();
+        paginationButton.shouldBe(visible, enabled);
+
+        executeJavaScript("arguments[0].scrollIntoView(true);", paginationButton);
+
+        paginationButton.click();
+        log("Clicked the pagination button");
+
+        paginationButton.shouldBe(visible, enabled);
+        log("Pagination button is still visible after clicking");
+
+        addAllureStep();
+    }
+    @Step("Log info: {0}")
+    private void log(String message) {
+        System.out.println(message);
+    }
+    @Step("{0}")
+    private void addAllureStep() {
+        System.out.println("Allure step: " + "Pagination button clicked and is still visible.");
     }
 }

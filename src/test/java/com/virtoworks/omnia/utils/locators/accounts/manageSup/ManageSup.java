@@ -6,12 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.*;
 
 /**
  * Locator class for managing supplier-related elements.
  */
 public class ManageSup {
+
 
     /**
      * Subclass for locating status-related elements.
@@ -33,6 +34,19 @@ public class ManageSup {
      */
     public static SelenideElement getSearchInput() {
         return $("input[placeholder='Search']");
+    }
+
+    /**
+     * Locates the second "decorator" button element.
+     *
+     * @return The second "decorator" button element.
+     */
+    public static SelenideElement getDecorator__btn() {
+        return $x("//*[@id=\"app\"]/div/div[4]/div/div/div/div[2]/div[3]/div/div/div[1]/div[1]/button[2]");
+    }
+
+    public static SelenideElement getNext__btn() {
+        return $(byText("Next"));
     }
 
     /**
@@ -128,9 +142,9 @@ public class ManageSup {
          * @return The element for downloading tax certification data.
          */
         public static SelenideElement DownloadTaxCertData() {
+
             return $(".divide-y");
         }
-
         /**
          * Locates the element for close up tax dropdown data.
          *
@@ -178,3 +192,4 @@ public class ManageSup {
     }
 
 }
+
